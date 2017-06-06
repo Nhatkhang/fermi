@@ -23,6 +23,8 @@ int main(int argc,char **argv)
   int    i;
   int    rank       = -1;
   int    size       = -1;
+  int    globa_rank = -1;
+  int    globa_size = -1;
   int    local_rank = -1;
   int    local_size = -1;
   int    sw, sm;
@@ -31,11 +33,11 @@ int main(int argc,char **argv)
   char   file_c[64];
 
   
-  MPI_Comm world_comm;   // Global communicator
+  MPI_Comm WORLD_Comm;   // Global communicator
   MPI_Comm CONTROL_Comm; // Local communicator
   MPI_Comm INTER_Comm;   // Inter-communicator
 
-  world_comm   = MPI_COMM_WORLD;
+  WORLD_Comm   = MPI_COMM_WORLD;
   CONTROL_Comm = MPI_COMM_NULL;
   INTER_Comm   = MPI_COMM_NULL;
 
@@ -50,9 +52,15 @@ int main(int argc,char **argv)
   sw = sizeof(world);
   sm = sizeof(my_name);
   commdom_set_names( world, &sw, my_name, &sm);
-  commdom_create_commij((int*)&world_comm, (int*)&CONTROL_Comm);
+  commdom_create_commij((int*)&WORLD_Comm, (int*)&CONTROL_Comm);
   MPI_Comm_rank(CONTROL_Comm, &local_rank);
   MPI_Comm_size(CONTROL_Comm, &local_size);
+  MPI_Comm_rank(CONTROL_Comm, &local_rank);
+  MPI_Comm_size(CONTROL_Comm, &local_size);
+  printf("control.c : globa_rank = %d\n", globa_rank);
+  printf("control.c : globa_size = %d\n", globa_size);
+  printf("control.c : local_rank = %d\n", local_rank);
+  printf("control.c : local_size = %d\n", local_size);
   commdom_get_commij_size(&size_commij);
   
   MPI_Finalize();
