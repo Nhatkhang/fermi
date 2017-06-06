@@ -101,7 +101,7 @@ Pseudocode for this instance:
   checkConsistency(\textcolor{OliveGreen}{t_0, N_t, N_input_var, N_output_var})
   
   \textcolor{Gray}{Receiving control instruction:}
-  \textcolor{Gray}{0: restart step / 1: continue / 2: abort}
+  \textcolor{Gray}{0: continue / 1: abort / 2: restart step}
 
 
   error = MPI_Recv (&\textcolor{OliveGreen}{order}, 1, MPI_DOUBLE_PRECISION, 0, tag, Comp_Comm, &status)
@@ -160,7 +160,7 @@ Pseudocode for this instance:
 \subsection*{Coupling at instance 3: at the end of each coupled time step}
 
 At the end of each coupled time step, it is necessary to send calculated variables of interest.
-Also, Fermi has to wait to the master instruction, which could be: restart, continue or abort.
+Also, Fermi has to wait to the master instruction, which could be: continue, abort or restart.
 
 Pseudocode for this instance:
 

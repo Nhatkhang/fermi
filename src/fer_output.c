@@ -45,7 +45,7 @@ int print_struct(int step)
 
   if(!fout)
   {
-    PetscPrintf(PETSC_COMM_WORLD,"output.c: (output_print_structures) Error opening output file.");
+    PetscPrintf(FERMI_Comm,"output.c: (output_print_structures) Error opening output file.");
     return 1;
   }
 
@@ -368,7 +368,7 @@ int print_out(Vec *phi, int step)
 //        double        vloc[2], vglo[2];
 //
 //        bthdisf(po->phys, po->norm, vloc, u);
-//        MPI_Reduce(vloc, vglo, 2, MPI_DOUBLE, MPI_SUM, 0, PETSC_COMM_WORLD);
+//        MPI_Reduce(vloc, vglo, 2, MPI_DOUBLE, MPI_SUM, 0, FERMI_Comm);
 //
 //        if(!rank){
 //          fl=fopen(po->file,"a");

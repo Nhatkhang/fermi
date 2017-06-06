@@ -11,7 +11,7 @@ int fernorm(void)
   if(fer_pow(&fpower))
     return 1;
 
-  PetscPrintf(PETSC_COMM_WORLD,"Eigen power : %lf\n",fpower); 
+  PetscPrintf(FERMI_Comm,"Eigen power : %lf\n",fpower); 
   VecScale(phi_n,power/fpower);
 
   return 0;
@@ -77,9 +77,9 @@ int fer_pow(double *fpower)
   }
   
   /* Hacemos el Allreduce de las power_l de cada proceso y metemos el resultado en fpower */
-  error = MPI_Allreduce(&power_l,fpower,1,MPI_DOUBLE,MPI_SUM,PETSC_COMM_WORLD);
+  error = MPI_Allreduce(&power_l,fpower,1,MPI_DOUBLE,MPI_SUM,FERMI_Comm);
   if(error){
-    PetscPrintf(PETSC_COMM_WORLD,"fer_powe.c:error mpi_allreduce.\n"); 
+    PetscPrintf(FERMI_Comm,"fer_powe.c:error mpi_allreduce.\n"); 
     return 1;
   }
 
@@ -120,9 +120,9 @@ int fer_pow_phys( int n, int * ids, double *fpower )
 	      }
 
 	      /* Hacemos el Allreduce de las power_l de cada proceso y metemos el resultado en fpower[p] */
-	      error = MPI_Allreduce(&power_l,&fpower[p],1,MPI_DOUBLE,MPI_SUM,PETSC_COMM_WORLD);
+	      error = MPI_Allreduce(&power_l,&fpower[p],1,MPI_DOUBLE,MPI_SUM,FERMI_Comm);
 	      if(error){
-		  PetscPrintf(PETSC_COMM_WORLD,"fer_powe.c:error mpi_allreduce.\n"); 
+		  PetscPrintf(FERMI_Comm,"fer_powe.c:error mpi_allreduce.\n"); 
 		  return 1;
 	      }
 

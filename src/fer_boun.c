@@ -30,7 +30,7 @@ int ferbouset(void){
       pNodA=pNodA->next;
     }
     if(!pNodA){
-      PetscPrintf(PETSC_COMM_WORLD,"bound.c:boundary %s has no phys entity.\n",((bound_t*)pNod->data)->name);
+      PetscPrintf(FERMI_Comm,"bound.c:boundary %s has no phys entity.\n",((bound_t*)pNod->data)->name);
       return 1;
     }
     gmshid=((gmshP_t*)pNodA->data)->gmshid;

@@ -25,7 +25,7 @@ int ferirods(void)
     }
     if(!pp)
     {
-      PetscPrintf(PETSC_COMM_WORLD,"ferrods.c:the rod %s doesn't have physe.\n",((ctrlrod_t*)pr->data)->name_ele); 
+      PetscPrintf(FERMI_Comm,"ferrods.c:the rod %s doesn't have physe.\n",((ctrlrod_t*)pr->data)->name_ele); 
       return 1;
     }
     gmshid=((gmshP_t*)pp->data)->gmshid;
@@ -49,7 +49,7 @@ int ferirods(void)
     }
     if(!pp)
     {
-      PetscPrintf(PETSC_COMM_WORLD,"ferrods.c:the rod %s doesn't have physe.\n",((ctrlrod_t*)pr->data)->name_nod); 
+      PetscPrintf(FERMI_Comm,"ferrods.c:the rod %s doesn't have physe.\n",((ctrlrod_t*)pr->data)->name_nod); 
       return 1;
     }
     gmshid=((gmshP_t*)pp->data)->gmshid;
@@ -60,7 +60,7 @@ int ferirods(void)
         for(d=0;d<3;d++)
           ((ctrlrod_t*)pr->data)->p[d]=mesh.node[mesh.elems[e].nodel[0]].coor[d];
         for(d=0;d<nproc;d++)
-          error=MPI_Send((void*)((ctrlrod_t*)pr->data)->p,3,MPI_DOUBLE,d,0,PETSC_COMM_WORLD);
+          error=MPI_Send((void*)((ctrlrod_t*)pr->data)->p,3,MPI_DOUBLE,d,0,FERMI_Comm);
         flag=1;
         break;
       }
@@ -68,13 +68,13 @@ int ferirods(void)
 
     if(!flag)
     {
-      error=MPI_Recv((void*)((ctrlrod_t*)pr->data)->p,3,MPI_DOUBLE,1,0,PETSC_COMM_WORLD,MPI_STATUS_IGNORE);
+      error=MPI_Recv((void*)((ctrlrod_t*)pr->data)->p,3,MPI_DOUBLE,1,0,FERMI_Comm,MPI_STATUS_IGNORE);
       if(error)
         return 1;
     }
 
     pr=pr->next;
-    MPI_Barrier(PETSC_COMM_WORLD);
+    MPI_Barrier(FERMI_Comm);
   }
   return 0;
 }

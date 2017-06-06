@@ -17,7 +17,7 @@ int fersolv_ST(void)
       EPSGetEigenpair(eps,i,&ikeff,NULL,phi_n,NULL);
       keff=1/ikeff;
       EPSComputeError(eps,i,EPS_ERROR_RELATIVE,&error);
-      PetscPrintf(PETSC_COMM_WORLD,"Keff: %lf Its:%d error:%e\n",keff,its,error); 
+      PetscPrintf(FERMI_Comm,"Keff: %lf Its:%d error:%e\n",keff,its,error); 
     }
 
     return 0;
@@ -25,9 +25,9 @@ int fersolv_ST(void)
 
 int fersolv_TR(void)
 {
-//    PetscViewerASCIIOpen(PETSC_COMM_WORLD,"b.dat",&viewer);
+//    PetscViewerASCIIOpen(FERMI_Comm,"b.dat",&viewer);
 //    VecView(b,viewer);
-//    PetscViewerASCIIOpen(PETSC_COMM_WORLD,"M.dat",&viewer);
+//    PetscViewerASCIIOpen(FERMI_Comm,"M.dat",&viewer);
 //    MatView(M,viewer);
     KSPSetOperators(ksp,M,M);
     KSPSolve(ksp,b,phi_n);

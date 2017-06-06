@@ -97,4 +97,10 @@ int fer_corecv(MPI_Comm * couple_comm);
 int fer_cosend(MPI_Comm * couple_comm, int * control_fg);
 int fer_coends(MPI_Comm * couple_comm);
 
+#ifdef COMMDOM 
+#include "commdom_wrapper.h"
+#endif
+void init_coupling(); 
+
+
 #endif

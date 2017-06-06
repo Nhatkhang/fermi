@@ -95,7 +95,7 @@ int ferass_TR_1(int step)
     {
       if(ferelem_M(e))
       {
-        PetscPrintf(PETSC_COMM_WORLD,"Problem calculating elemental objects TR steps.\n"); 
+        PetscPrintf(FERMI_Comm,"Problem calculating elemental objects TR steps.\n"); 
         return 1;
       }
       MatSetValues(M,nke,idxm,nke,idxm,Me,ADD_VALUES);
@@ -117,7 +117,7 @@ int ferass_TR_1(int step)
     {
       if(ferelem_R(*(int*)pe->data,*(double*)px->data,-1.0))
       {
-        PetscPrintf(PETSC_COMM_WORLD,"ferassm.c:problem calculating rod element perturbation.\n"); 
+        PetscPrintf(FERMI_Comm,"ferassm.c:problem calculating rod element perturbation.\n"); 
         return 1;
       }
       pe=pe->next;
@@ -166,7 +166,7 @@ int ferass_ST(void)
   for(e=0;e<mesh.nelemv;e++)
   {
     if(ferelem_AB(e)){
-      PetscPrintf(PETSC_COMM_WORLD,"Problem calculating elemental objects ST steps.\n"); 
+      PetscPrintf(FERMI_Comm,"Problem calculating elemental objects ST steps.\n"); 
       return 1;
     }
     MatSetValues(A,nke,idxm,nke,idxm,Ae,ADD_VALUES);
@@ -210,9 +210,9 @@ int ferass_ST(void)
   MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);
   MatAssemblyBegin(B,MAT_FINAL_ASSEMBLY);
   MatAssemblyEnd(B,MAT_FINAL_ASSEMBLY);
-  //    PetscViewerASCIIOpen(PETSC_COMM_WORLD,"A.dat",&viewer);
+  //    PetscViewerASCIIOpen(FERMI_Comm,"A.dat",&viewer);
   //    MatView(A,viewer);
-  //    PetscViewerASCIIOpen(PETSC_COMM_WORLD,"B.dat",&viewer);
+  //    PetscViewerASCIIOpen(FERMI_Comm,"B.dat",&viewer);
   //    MatView(B,viewer);
   return 0;
 }

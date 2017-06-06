@@ -10,6 +10,8 @@
 #define DIM 3
 #define NPE 8
 
+MPI_Comm FERMI_Comm;
+
 enum {QS, TR};      /*Quasi Static, transient*/
 enum {K1}; /*Calculation of elemental matrix by this K modes*/
 

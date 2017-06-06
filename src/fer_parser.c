@@ -18,7 +18,7 @@
 int parse_input(void){
 
   if(access(inputfile,F_OK) == -1){
-    PetscPrintf(PETSC_COMM_WORLD,"parser.c: file %s not found.\n",inputfile);
+    PetscPrintf(FERMI_Comm,"parser.c: file %s not found.\n",inputfile);
     return 1;
   }
 
@@ -57,10 +57,10 @@ int parse_mesh(void)
           return 0;
         }else if(nproc>1&&(!(com&4)||!(com&8)) )
         {
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:part file NF.\n");
+          PetscPrintf(FERMI_Comm,"parser.c:part file NF.\n");
           return 1;
         }else{
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:$Mesh sect BF.\n");
+          PetscPrintf(FERMI_Comm,"parser.c:$Mesh sect BF.\n");
           return 1;    
         }
       }
@@ -68,41 +68,41 @@ int parse_mesh(void)
         if(strcmp(data,"mesh_file") == 0){    
           data = strtok(NULL," \n");    
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:meshfile line %d.\n",ln); 
+            PetscPrintf(FERMI_Comm,"parser.c:meshfile line %d.\n",ln); 
             return 1;
           }
           strcpy(meshfile,data);   
           if(access(meshfile,F_OK) == -1){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:%s NF.\n",meshfile); 
+            PetscPrintf(FERMI_Comm,"parser.c:%s NF.\n",meshfile); 
             return 1;
           }
           com=com|1;  
         }else if(strcmp(data,"parfile_e") == 0){    
           data = strtok(NULL," \n");    
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:partfile line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:partfile line %d.\n",ln);
             return 1;
           }
           strcpy(epartfile,data);
           if(access(epartfile,F_OK) == -1){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:%s NF.\n",epartfile); 
+            PetscPrintf(FERMI_Comm,"parser.c:%s NF.\n",epartfile); 
             return 1;
           }
           com=com|2;
         }else if(strcmp(data,"parfile_n") == 0){    
           data = strtok(NULL," \n");    
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:partfile line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:partfile line %d.\n",ln);
             return 1;
           }
           strcpy(npartfile,data);
           if(access(npartfile,F_OK) == -1){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:%s NF.\n",npartfile); 
+            PetscPrintf(FERMI_Comm,"parser.c:%s NF.\n",npartfile); 
             return 1;
           }
           com=com|4;     
         }else if(strcmp(data,"#")!=0){    
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln); 
+          PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln); 
           return 1;
         }    
       }
@@ -135,7 +135,7 @@ int parse_mats(void)
       {
         if(!list_mater.sizelist)
         {
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:no materials specified.\n");
+          PetscPrintf(FERMI_Comm,"parser.c:no materials specified.\n");
           return 1;     
         }
         return 0;
@@ -146,13 +146,13 @@ int parse_mats(void)
         {
           data = strtok(NULL," \n");    
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln); 
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln); 
             return 1;
           }    
           egn=atoi(data);
           if(egn<1)
           {
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:egn should positive at line %d.\n",ln); 
+            PetscPrintf(FERMI_Comm,"parser.c:egn should positive at line %d.\n",ln); 
             return 1;
           }
           veloc=(double*)calloc(egn,sizeof(double));
@@ -161,13 +161,13 @@ int parse_mats(void)
         {
           data = strtok(NULL," \n");    
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln); 
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln); 
             return 1;
           }    
           pgn=atoi(data);
           if(pgn<1)
           {
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:pgn should positive at line %d.\n",ln); 
+            PetscPrintf(FERMI_Comm,"parser.c:pgn should positive at line %d.\n",ln); 
             return 1;
           }
           beta=(double*)calloc(pgn,sizeof(double));
@@ -180,7 +180,7 @@ int parse_mats(void)
           {
             data=strtok(NULL," \n");    
             if(!data){
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln); 
+              PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln); 
               return 1;
             }    
             veloc[i]=atof(data);
@@ -192,7 +192,7 @@ int parse_mats(void)
           {
             data=strtok(NULL," \n");    
             if(!data){
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln); 
+              PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln); 
               return 1;
             }    
             beta[i]=atof(data);
@@ -201,7 +201,7 @@ int parse_mats(void)
           {
             data=strtok(NULL," \n");    
             if(!data){
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln); 
+              PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln); 
               return 1;
             }    
             lambda[i]=atof(data);
@@ -210,7 +210,7 @@ int parse_mats(void)
           {
             data=strtok(NULL," \n");    
             if(!data){
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln); 
+              PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln); 
               return 1;
             }    
             chi[i]=atof(data);
@@ -220,7 +220,7 @@ int parse_mats(void)
         {
           if((com&1)!=1)
           {
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:egn should be before xs values at line %d.\n",ln); 
+            PetscPrintf(FERMI_Comm,"parser.c:egn should be before xs values at line %d.\n",ln); 
             return 1;
           }    
           mat.D    =(double*)calloc(egn,sizeof(double));
@@ -231,7 +231,7 @@ int parse_mats(void)
           mat.chi  =(double*)calloc(egn,sizeof(double));
           if(parse_material(bufcpy,&mat))
           {
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln); 
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln); 
             return 1;
           }
           if(list_insert_se(&list_mater,(void*)&mat))
@@ -274,7 +274,7 @@ int parse_mode(void)
         }else{
           if(power<=1.0e-10)
           {
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:p0 <= 0 line %d.\n",ln); 
+            PetscPrintf(FERMI_Comm,"parser.c:p0 <= 0 line %d.\n",ln); 
             return 1;
           }
         }
@@ -289,10 +289,10 @@ int parse_mode(void)
           pnb=pnb->next;
         }
         if(pna!=NULL||pnb!=NULL){
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+          PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
           return 1;
         }else if( (com&24)==24 ){
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:dt and ts specified at the same time.\n");
+          PetscPrintf(FERMI_Comm,"parser.c:dt and ts specified at the same time.\n");
         }
         return 0;    
       }
@@ -300,14 +300,14 @@ int parse_mode(void)
         if(strcmp(data,"timedep") == 0){
           data = strtok(NULL," \n");    
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
           }
           if(!strcmp(data,"QSTATIC")){    
             calcu.timedep=QS;
           }else if(!strcmp(data,"DYNAMIC")){    
             calcu.timedep=TR;
           }else{    
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:Invalid option at line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:Invalid option at line %d.\n",ln);
             return 1;
           }
           com=com|2;
@@ -315,7 +315,7 @@ int parse_mode(void)
         {
           data = strtok(NULL," \n");    
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           calcu.t0=atof(data);
@@ -323,7 +323,7 @@ int parse_mode(void)
         {
           data = strtok(NULL," \n");
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           while(data){
@@ -335,7 +335,7 @@ int parse_mode(void)
         }else if(strcmp(data,"dt") == 0){
           data = strtok(NULL," \n");
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           while(data){
@@ -347,7 +347,7 @@ int parse_mode(void)
         }else if(strcmp(data,"tsteps") == 0){
           data = strtok(NULL," \n");
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           while(data){
@@ -360,13 +360,13 @@ int parse_mode(void)
         {
           data = strtok(NULL," \n");    
           if(!data){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           if(!strcmp(data,"K1")){    
             calcu.kmode=K1;
           }else{    
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:Invalid option at line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:Invalid option at line %d.\n",ln);
             return 1;
           }
           com=com|32;
@@ -375,13 +375,13 @@ int parse_mode(void)
           data = strtok(NULL," \n");    
           if(!data)
           {
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           power=atof(data);
           com=com|64;
         }else if(strcmp(data,"#") != 0){    
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+          PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
           return 1;
         }
       }
@@ -417,7 +417,7 @@ int parse_crod(void){
             data=strtok(NULL," \n");
             if(!data)
             {
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+              PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
               return 1;
             }
             strcpy(ctrlrod.name_ele,data);
@@ -425,7 +425,7 @@ int parse_crod(void){
             data=strtok(NULL," \n");
             if(!data)
             {
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+              PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
               return 1;
             }
             strcpy(ctrlrod.name_nod,data);
@@ -433,7 +433,7 @@ int parse_crod(void){
             data=strtok(NULL," \n");
             if(!data)
             {
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+              PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
               return 1;
             }
             ctrlrod.nfun=atoi(data);
@@ -446,7 +446,7 @@ int parse_crod(void){
             }
             if(!nod)
             {
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:func %d NF line %d.\n",ctrlrod.nfun,ln);
+              PetscPrintf(FERMI_Comm,"parser.c:func %d NF line %d.\n",ctrlrod.nfun,ln);
               return 1;
             }
             ctrlrod.funins=nod->data;
@@ -456,7 +456,7 @@ int parse_crod(void){
               data=strtok(NULL," \n");
               if(!data)
               {
-                PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+                PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
                 return 1;
               }
               ctrlrod.n[i]=atoi(data);
@@ -465,7 +465,7 @@ int parse_crod(void){
             data=strtok(NULL," \n");
             if(!data)
             {
-              PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+              PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
               return 1;
             }
             ctrlrod.xsaval=atof(data);
@@ -505,10 +505,10 @@ int parse_func(void)
           com=0;
           fl=0;
         }else if(fl==0){
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+          PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
           return 1;
         }else{
-          PetscPrintf(PETSC_COMM_WORLD,"parser.c:incomplete $Function section.\n");
+          PetscPrintf(FERMI_Comm,"parser.c:incomplete $Function section.\n");
           return 1;
         }
       }
@@ -542,16 +542,16 @@ int parse_func(void)
         }else if(strcmp(data,"start") == 0){
           fs=1;
           if( (com & 1 ) != 1){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:<funckind> should be < start>.\n");  
+            PetscPrintf(FERMI_Comm,"parser.c:<funckind> should be < start>.\n");  
             return 1;
           }
         }else if(strcmp(data,"end") == 0){
           if(fs==0){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           if(!list_xy.sizelist){
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           f1d->n=list_xy.sizelist;
@@ -598,7 +598,7 @@ int parse_boun(void){
         fl=1;
       }else if(!strcmp(data,"$EndBoundary")){
         if(!list_bound.sizelist){ 
-        PetscPrintf(PETSC_COMM_WORLD,"parser.c: No boundaries in %s.\n",inputfile);
+        PetscPrintf(FERMI_Comm,"parser.c: No boundaries in %s.\n",inputfile);
           return 1;
         }
         return 0;    
@@ -607,7 +607,7 @@ int parse_boun(void){
         if(data[0]!='#'){
           if(parse_boundary(bufcpy,&bou))
           {
-            PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+            PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
             return 1;
           }
           list_insert_se(&list_bound,(void*)&bou);
@@ -734,7 +734,7 @@ int parse_outp(void)
 
 	}
 	else{
-	  PetscPrintf(PETSC_COMM_WORLD,"parser.c:BF line %d.\n",ln);
+	  PetscPrintf(FERMI_Comm,"parser.c:BF line %d.\n",ln);
 	  return 1;
 	}
 	fl = 0;
@@ -829,18 +829,18 @@ int get_int(char *buf, const char *name,int *a)
   data = strtok(buf," \n");    
 
   if(!data){
-    PetscPrintf(PETSC_COMM_WORLD,"%s expected.\n",name);
+    PetscPrintf(FERMI_Comm,"%s expected.\n",name);
     return 1;
   }
 
   if(strcmp(data,name)){
-    PetscPrintf(PETSC_COMM_WORLD,"%s expected.\n",name);
+    PetscPrintf(FERMI_Comm,"%s expected.\n",name);
     return 1;
   }
 
   data = strtok(NULL," \n");    
   if(!data){
-    PetscPrintf(PETSC_COMM_WORLD,"%s value expected.\n",name);
+    PetscPrintf(FERMI_Comm,"%s value expected.\n",name);
     return 1;
   }
   *a = atoi(data);
@@ -865,18 +865,18 @@ int get_char(char *buf, const char *name,char *a)
   data = strtok(buf," \n");    
 
   if(!data){
-    PetscPrintf(PETSC_COMM_WORLD,"%s expected.\n",name);
+    PetscPrintf(FERMI_Comm,"%s expected.\n",name);
     return 1;
   }
 
   if(strcmp(data,name)){
-    PetscPrintf(PETSC_COMM_WORLD,"%s expected.\n",name);
+    PetscPrintf(FERMI_Comm,"%s expected.\n",name);
     return 1;
   }
 
   data = strtok(NULL," \n");    
   if(!data){
-    PetscPrintf(PETSC_COMM_WORLD,"%s value expected.\n",name);
+    PetscPrintf(FERMI_Comm,"%s value expected.\n",name);
     return 1;
   }
   strcpy(a,data);

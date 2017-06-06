@@ -38,15 +38,15 @@ int main(int argc,char **argv){
 
   }else if(calcu.timedep == TR){
 
-    PetscPrintf(PETSC_COMM_WORLD,"calculating stationary state.\n");
+    PetscPrintf(FERMI_Comm,"calculating stationary state.\n");
     if(ferstep_ST())
       goto error;
 
     sprintf(nam,"steady_r%d",rank);
     print_vtk(nam);
 
-    PetscPrintf(PETSC_COMM_WORLD,"initial power:%e\n",power);
-    PetscPrintf(PETSC_COMM_WORLD,"time    power   its\n");
+    PetscPrintf(FERMI_Comm,"initial power:%e\n",power);
+    PetscPrintf(FERMI_Comm,"time    power   its\n");
 
     pNod=calcu.time.head;
     while(pNod)
@@ -60,7 +60,7 @@ int main(int argc,char **argv){
       if(fer_pow(&power))
         goto error;
 
-      PetscPrintf(PETSC_COMM_WORLD,"%lf %e %d \n",calcu.t,power,its);
+      PetscPrintf(FERMI_Comm,"%lf %e %d \n",calcu.t,power,its);
 
       sprintf(nam,"tran_rank%d_t%d",rank,step);
       print_vtk(nam);
@@ -79,3 +79,4 @@ error:
 
   return 0;
 }
+
