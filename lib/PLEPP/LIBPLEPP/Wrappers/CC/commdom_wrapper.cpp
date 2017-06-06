@@ -61,7 +61,7 @@ extern "C"
 
 
   void 
-  commdom_set_names_(const char* ftype, int* ntype, const char* fname, int* nname)
+  commdom_set_names(const char* ftype, int* ntype, const char* fname, int* nname)
   {
     std::string  ctype( ptr_class->string_f2c(ftype, ntype[0]) );
     std::string  cname( ptr_class->string_f2c(fname, nname[0]) );
@@ -79,7 +79,7 @@ extern "C"
 
 
   void 
-  commdom_create_commij_(int* fcomm, int* lcomm)
+  commdom_create_commij(int* fcomm, int* lcomm)
   {
     int app_id = -1;
     int n_apps = -1; 
@@ -156,14 +156,14 @@ extern "C"
 
 
   void 
-  commdom_get_commij_size_(int* commij_size)
+  commdom_get_commij_size(int* commij_size)
   {
     ptr_class->get_commij_size(commij_size); 
   }
 
 
   void 
-  commdom_get_commij_(char* fnamej, int* nnamej, int* fcommij)
+  commdom_get_commij(char* fnamej, int* nnamej, int* fcommij)
   {
     std::string cnamej( ptr_class->string_f2c(fnamej, nnamej[0]) );
     

@@ -147,20 +147,20 @@ am__relativize = \
     dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
   done; \
   reldir="$$dir2"
-ACLOCAL = ${SHELL} /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/build-aux/missing --run aclocal-1.12
+ACLOCAL = ${SHELL} /home/guido/codes/fermi/lib/PLEPP/LIBPLE/build-aux/missing --run aclocal-1.12
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
 AR = ar
 AS = as
-AUTOCONF = ${SHELL} /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/build-aux/missing --run autoconf
-AUTOHEADER = ${SHELL} /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/build-aux/missing --run autoheader
-AUTOMAKE = ${SHELL} /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/build-aux/missing --run automake-1.12
+AUTOCONF = ${SHELL} /home/guido/codes/fermi/lib/PLEPP/LIBPLE/build-aux/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/guido/codes/fermi/lib/PLEPP/LIBPLE/build-aux/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/guido/codes/fermi/lib/PLEPP/LIBPLE/build-aux/missing --run automake-1.12
 AWK = gawk
 CC = mpicc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -strict-ansi -std=c99 -funsigned-char -Wall -Wcheck -Wshadow -Wpointer-arith -Wmissing-prototypes -Wuninitialized -Wunused 
+CFLAGS = -std=c99 -funsigned-char -pedantic -W -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Wunused -Wfloat-equal 
 CFLAGS_DBG = 
-CFLAGS_OPT = -O2
+CFLAGS_OPT = -funroll-loops -O2 -Wuninitialized -fexcess-precision=fast
 CPP = mpicc -E
 CPPFLAGS =   -DNDEBUG
 CYGPATH_W = echo
@@ -172,10 +172,10 @@ DUMPBIN =
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
-EGREP = /usr/bin/grep -E
+EGREP = /bin/grep -E
 EXEEXT = 
-FGREP = /usr/bin/grep -F
-GREP = /usr/bin/grep
+FGREP = /bin/grep -F
+GREP = /bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -190,8 +190,8 @@ LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = ln -s
 LTLIBOBJS = 
-MAINT = 
-MAKEINFO = ${SHELL} /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/build-aux/missing --run makeinfo
+MAINT = #
+MAKEINFO = ${SHELL} /home/guido/codes/fermi/lib/PLEPP/LIBPLE/build-aux/missing --run makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /bin/mkdir -p
 MPI_CPPFLAGS = 
@@ -212,15 +212,15 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = 1.0.4
 PATH_SEPARATOR = :
 RANLIB = ranlib
-SED = /usr/bin/sed
+SED = /bin/sed
 SET_MAKE = 
-SHELL = /bin/sh
+SHELL = /bin/bash
 STRIP = strip
 VERSION = 1.0.4
-abs_builddir = /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/doc
-abs_srcdir = /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/doc
-abs_top_builddir = /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE
-abs_top_srcdir = /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE
+abs_builddir = /home/guido/codes/fermi/lib/PLEPP/LIBPLE/doc
+abs_srcdir = /home/guido/codes/fermi/lib/PLEPP/LIBPLE/doc
+abs_top_builddir = /home/guido/codes/fermi/lib/PLEPP/LIBPLE
+abs_top_srcdir = /home/guido/codes/fermi/lib/PLEPP/LIBPLE
 ac_ct_AR = ar
 ac_ct_CC = mpicc
 ac_ct_DUMPBIN = 
@@ -252,7 +252,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/build-aux/install-sh
+install_sh = ${SHELL} /home/guido/codes/fermi/lib/PLEPP/LIBPLE/build-aux/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -261,7 +261,7 @@ mandir = ${datarootdir}/man
 mkdir_p = $(MKDIR_P)
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /.statelite/tmpfs/gpfs/projects/bsc21/bsc21704/RUNNER_2016/REPOSITORY/ALYAs/ALYA_2016DEC21/Thirdparties/PLEPP/LIBPLE/Execs
+prefix = /home/guido/codes/fermi/lib/PLEPP/LIBPLE/Execs
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -282,7 +282,7 @@ EXTRA_DIST =
 all: all-recursive
 
 .SUFFIXES:
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: # $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -307,9 +307,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 
-$(top_srcdir)/configure:  $(am__configure_deps)
+$(top_srcdir)/configure: # $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
+$(ACLOCAL_M4): # $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 

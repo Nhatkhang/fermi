@@ -20,3 +20,6 @@ fermi
 *npart*
 *metismesh
 *.so*
+*.lo
+*.o
+*.swp

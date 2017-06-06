@@ -24,19 +24,19 @@ extern "C" {  // fortran visibility!!
   void
   commdom_analyse_argvs(const char* ftype, int* ntype); 
 
-/*
+
   void 
   commdom_set_names(const char*, int*, const char*, int*);
   
   void 
-  commdomm_create_commij(int*, int*);
+  commdom_create_commij(int*, int*);
 
   void
   commdom_get_commij_size(int*);
 
   void
   commdom_get_commij(char*, int*, int*); 
-
+/*
   void 
   commdom_sendrecv_int(int*, int*, int*, int*, int*, int*);
 

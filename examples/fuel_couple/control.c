@@ -25,6 +25,7 @@ int main(int argc,char **argv)
   int    size       = -1;
   int    local_rank = -1;
   int    local_size = -1;
+  int    sw, sm;
   int    size_commij;
 
   char   file_c[64];
@@ -34,7 +35,7 @@ int main(int argc,char **argv)
   MPI_Comm CONTROL_Comm; // Local communicator
   MPI_Comm INTER_Comm;   // Inter-communicator
 
-  world_comm = MPI_COMM_WORLD;
+  world_comm   = MPI_COMM_WORLD;
   CONTROL_Comm = MPI_COMM_NULL;
   INTER_Comm   = MPI_COMM_NULL;
 
@@ -42,15 +43,17 @@ int main(int argc,char **argv)
 
   char world[]   = "acople";
   char my_name[] = "control";
-  char friend[]  = "fermi";
+  char Friend[]  = "fermi";
 
   commdom_create();
 
-  commdom_set_names( world, sizeof(world), my_name, sizeof(my_name))
-  commdom_create_commij(&world_comm, &CONTROL_Comm);
-  MPI_Comm_rank(CONTROL_Comm, local_rank);
-  MPI_Comm_size(CONTROL_Comm, local_size);
-  commdom_get_commij_size(size_commij);
+  sw = sizeof(world);
+  sm = sizeof(my_name);
+  commdom_set_names( world, &sw, my_name, &sm);
+  commdom_create_commij((int*)&world_comm, (int*)&CONTROL_Comm);
+  MPI_Comm_rank(CONTROL_Comm, &local_rank);
+  MPI_Comm_size(CONTROL_Comm, &local_size);
+  commdom_get_commij_size(&size_commij);
   
   MPI_Finalize();
 

@@ -7,8 +7,6 @@
 #  Guido Giuntoli
 #
 
-PWD:= $(shell pwd)
-
 CFLAGS=-g -O0
 
 ROOT     = ../..
@@ -25,10 +23,7 @@ LIBS    += $(LIBPLE)/Execs/lib/libple.a
 all: control 
 	
 control: control.c
-	${PETSC_COMPILE} ${CFLAGS} -o $@ $< 
+	mpicxx ${CFLAGS} -o $@ $< ${LIBS} -lm 
 
 clean_:	    
 	rm -f control
-
-include ${PETSC_DIR}/lib/petsc/conf/variables	
-include ${SLEPC_DIR}/lib/slepc/conf/slepc_common
