@@ -15,6 +15,9 @@ int ferinit(int argc,char **argv)
   // PETSC_COMM_WORLD = FERMI_Comm should go before petscinitialize
 
   FERMI_Comm = MPI_COMM_WORLD; // this should be change by a split
+  init_coupling();  
+
+
 
   MPI_Comm_rank(FERMI_Comm, &rank);
   MPI_Comm_size(FERMI_Comm, &nproc);  
@@ -206,4 +209,34 @@ int ferinit(int argc,char **argv)
     return 1;
   }
   return 0;
+}
+
+
+
+void init_coupling()
+{
+#ifdef COMMDOM 
+  commdom_create();
+/*
+  int iargc;
+  for(iargc=0; iargc<argc; iargc++)
+  {
+    printf("%d) %s \n", iargc, argv[iargc]);
+  }
+
+  char token[6] = "--name";
+  char my_name[6];
+  int  ntoken = 6;
+  commdom_analyse_argvs(token,&ntoken);
+  commdom_get_argvs(my_name);
+
+  commdom_set_names(trim(my_surname), len_trim(my_surname), trim(my_name), len_trim(my_name))
+  commdom_create_commij(world_comm, local_comm)
+  MPI_Comm_rank(local_comm, local_rank, error)
+  MPI_Comm_size(local_comm, local_size, error)
+  commdom_get_commij_size(size_commij)
+
+  //commdom_delete(); 
+*/
+#endif
 }
