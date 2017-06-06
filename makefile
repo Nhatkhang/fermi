@@ -1,6 +1,11 @@
-#export SLEPC_DIR=/home/guido/libs/slepc-3.7.1
-#export PETSC_DIR=/home/guido/libs/petsc-3.7.2
-#export PETSC_ARCH=arch-linux2-c-opt
+#############################################################
+#
+# FERMI makefile
+#
+# Authors: 
+# Miguel Zavala
+# Guido Giuntoli
+#
 
 PWD:= $(shell pwd)
 
@@ -65,6 +70,3 @@ clean_:
 
 include ${PETSC_DIR}/lib/petsc/conf/variables	
 include ${SLEPC_DIR}/lib/slepc/conf/slepc_common
-
-
-
