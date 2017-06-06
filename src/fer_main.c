@@ -2,11 +2,12 @@
 
 #include "fermi.h"
 
-int main(int argc,char **argv){
+int main(int argc,char **argv)
+{
 
-  int step;
-  char nam[32];
-  node_list_t *pNod;
+  int           step;
+  char          nam[32];
+  node_list_t * pNod;
 
   if(ferinit(argc,argv))
     goto error;
@@ -14,12 +15,10 @@ int main(int argc,char **argv){
   calcu.t = calcu.t0;
   step=0;
   
-  if(calcu.timedep == QS)
-  {
+  if(calcu.timedep == QS){
 
     pNod=calcu.time.head;
-    while(pNod)
-    {
+    while(pNod){
 
       dtn=((tcontrol_t*)pNod->data)->dt;
 
@@ -49,8 +48,7 @@ int main(int argc,char **argv){
     PetscPrintf(FERMI_Comm,"time    power   its\n");
 
     pNod=calcu.time.head;
-    while(pNod)
-    {
+    while(pNod){
 
       dtn=((tcontrol_t*)pNod->data)->dt;
 
