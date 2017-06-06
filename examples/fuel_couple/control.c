@@ -37,11 +37,15 @@ int main(int argc,char **argv)
   MPI_Comm CONTROL_Comm; // Local communicator
   MPI_Comm INTER_Comm;   // Inter-communicator
 
+  MPI_Init(&argc, &argv);
+
   WORLD_Comm   = MPI_COMM_WORLD;
   CONTROL_Comm = MPI_COMM_NULL;
   INTER_Comm   = MPI_COMM_NULL;
 
-  MPI_Init(&argc, &argv);
+  MPI_Comm_rank(WORLD_Comm, &globa_rank);
+  MPI_Comm_size(WORLD_Comm, &globa_size);
+  printf("control.c : globa_rank = %d globa_size = %d\n", globa_rank, globa_size);
 
   char world[]   = "acople";
   char my_name[] = "control";
@@ -55,12 +59,7 @@ int main(int argc,char **argv)
   commdom_create_commij((int*)&WORLD_Comm, (int*)&CONTROL_Comm);
   MPI_Comm_rank(CONTROL_Comm, &local_rank);
   MPI_Comm_size(CONTROL_Comm, &local_size);
-  MPI_Comm_rank(CONTROL_Comm, &local_rank);
-  MPI_Comm_size(CONTROL_Comm, &local_size);
-  printf("control.c : globa_rank = %d\n", globa_rank);
-  printf("control.c : globa_size = %d\n", globa_size);
-  printf("control.c : local_rank = %d\n", local_rank);
-  printf("control.c : local_size = %d\n", local_size);
+  printf("control.c : local_rank = %d local_size = %d\n", local_rank, local_size);
   commdom_get_commij_size(&size_commij);
   
   MPI_Finalize();
