@@ -21,8 +21,8 @@ typedef struct _propES_t
 
 }ps_t;
 
-typedef struct _bound_t
-{
+typedef struct _bound_t{
+
   char name[16];
   int kind;
   int order;
@@ -34,26 +34,26 @@ typedef struct _bound_t
 }bound_t;
 
 
-typedef struct _pv_t
-{
-  char *name;
-  int gmshid;
+typedef struct _pv_t{
 
-  double *D;               // diffusion coeficient
-  double *xs_a;            // absortion XS  
-  double *nxs_f;           // nu x fission XS
-  double *exs_f;           // energy x fission XS
-  double *xs_s;            // scattering XS 
-  double *xs_r;            // remotion XS
-  double *chi;             // fission spectrum
+  char   * name;
+  int      gmshid;
 
-  int  hasprec;
-  double *conc;           // Fission precursors concentration  ( I groups ) 
+  double * D;               // diffusion coeficient
+  double * xs_a;            // absortion XS  
+  double * nxs_f;           // nu x fission XS
+  double * exs_f;           // energy x fission XS
+  double * xs_s;            // scattering XS 
+  double * xs_r;            // remotion XS
+  double * chi;             // fission spectrum
+
+  int      hasprec;
+  double * conc;            // Fission precursors concentration  ( I groups ) 
 
 }pv_t;
 
-typedef struct _pvl_t
-{
+typedef struct _pvl_t{
+
   char name[16];
 
   double *D;               // diffusion coeficient
@@ -69,26 +69,26 @@ typedef struct _pvl_t
 }pvl_t;
 
 /*************************************************************/
-typedef struct _kind_1_t
-{
+typedef struct _kind_1_t{
+
   char     phys[16];
-}
-kind_1_t;
+
+}kind_1_t;
 
 /* this is used to print localized powers on physical entities on a file */
-typedef struct _kind_2_t
-{
+typedef struct _kind_2_t{
+
   FILE     * fp;
   char       file[16];
   char    ** phys; // array of string where we are going to save the phys names
   int        nphy;
   int      * ids ;
   double   * pow;
-}
-kind_2_t;
 
-typedef struct _output_t
-{
+}kind_2_t;
+
+typedef struct _output_t{
+
   /* esto va a volar pronto */
   char   file[16];
   char   phys[16];
@@ -103,15 +103,15 @@ typedef struct _output_t
 
 /*************************************************************/
 
-typedef struct _tcontrol_t
-{
+typedef struct _tcontrol_t{
+
   double tf;
   double dt;
 
 }tcontrol_t;
 
-typedef struct _ctrlrod_t
-{
+typedef struct _ctrlrod_t{
+
   char   name_ele[16]; /* elem physical entity name */
   char   name_nod[16]; /* node physical entity name */
   int    nfun;         /* function id number */
@@ -124,8 +124,8 @@ typedef struct _ctrlrod_t
 
 }ctrlrod_t;
 
-typedef struct
-{
+typedef struct{
+
   double t0;
   double t;
   list_t time;
@@ -136,6 +136,16 @@ typedef struct
     int exec;
     
 }calcu_t;
+
+/*************************************************************/
+
+typedef struct _coupling_t{
+
+  char     world[64];
+  int      num_friends;
+  char  ** friends;
+    
+}coupling_t;
 
 
 #endif

@@ -893,21 +893,112 @@ int cmp_mat(void *a, void *b){
 
 /*****************************************************************************************************/
 
-int parse_boundary(char *buff, bound_t *bou){
+int parse_coupling(const char file_c[])
+{
+
+  FILE * file = fopen(file_c,"r");
+  char * data, buf[NBUF];
+  int    ln=0, fl=0, i;
+
+  while(fgets(buf,NBUF,file)){
+
+    ln++;
+    data=strtok(buf," \n");
+
+    if(data){
+      if(data[0]!='#'){
+
+	switch(fl){
+
+	  case 0:
+
+	    // read world name
+	    if(!strcmp(data,"world")){
+
+	      data=strtok(NULL," \n");
+	      strcpy(coupling.world, data);
+
+	    }
+	    else{
+	      PetscPrintf(FERMI_Comm,"\"world\" expected at line %d in %s.\n", ln, file_c);
+	      return 1;
+	    }
+	    fl ++;
+	    break;
+
+	  case 1:
+
+	    // read friend number of names
+	    if(!strcmp(data,"num_friends")){
+
+	      data=strtok(NULL," \n");
+	      coupling.num_friends = atoi(data);
+
+	    }
+	    else{
+	      PetscPrintf(FERMI_Comm,"\"num_friends\" expected at line %d in %s.\n", ln, file_c);
+	      return 1;
+	    }
+	    fl ++;
+	    break;
+
+	  case 2:
+
+	    // read friend names
+	    coupling.friends = (char **) malloc(coupling.num_friends * sizeof(char*));
+	    for(i=0;i<coupling.num_friends;i++){
+
+	      coupling.friends[i] = (char *)malloc(64 * sizeof(char));
+
+	      if(data == NULL){
+		PetscPrintf(FERMI_Comm,"you should give at least %d friend names at line %d in %s.\n",
+		    coupling.num_friends, ln, file_c);
+		return 1;
+	      }
+	      strcpy( coupling.friends[i], data);
+	      data=strtok(NULL," \n");
+
+	    }
+	    fl ++;
+	    break;
+
+	  case 3:
+	    return 0;
+
+	  default:
+	    return 1;
+
+	}
+      }
+    }
+  }
+
+  fclose(file);
+  return 1;
+}
+
+/*****************************************************************************************************/
+
+int parse_boundary(char *buff, bound_t *bou)
+{
 
   char *data;    
+
   if(!strlen(buff))
     return 1;
+
   data = strtok(buff," \n");
   if(!data)
     return 1;
   if(data[0]!='\"'||data[strlen(data)-1]!='\"')
     return 1;
   strcpy(bou->name,data);
+
   data = strtok(NULL," \n");
   if(!data)
     return 1;
   bou->order=atoi(data);
+
   data = strtok(NULL," \n");
   if(!data)
     return 1;
@@ -915,8 +1006,11 @@ int parse_boundary(char *buff, bound_t *bou){
 
   list_init(&bou->nodeL,sizeof(int),cmp_int);
   list_init(&bou->elemsL,sizeof(int),cmp_int);
+
   return 0;
 }
+
+/*****************************************************************************************************/
 
 int cmp_bou(void *a, void *b){
 

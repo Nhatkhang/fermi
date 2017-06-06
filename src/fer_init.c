@@ -7,15 +7,35 @@ int ferinit(int argc,char **argv)
    * Reads the mesh
    * Allocs mamory for K, x, b
    */
-  int error,i,d,*ghost;
+
+  int    error, i, d, *ghost;
+  char   file_c[64];
 
   SlepcInitialize(&argc,&argv,(char*)0,NULL);
 
+  //================================================== 
+  // Read command line options 
+  //================================================== 
+  //
+  // couple file if "-c" is not specified no coupling file is read
+  //
+  PetscOptionsGetString(NULL,NULL,"-c",file_c,64,(PetscBool*)&couple_fl);
+
+  PetscPrintf(PETSC_COMM_WORLD,"coupling    : %d\n",couple_fl);
+
+  if( couple_fl == PETSC_TRUE ){
+    // fills the "coupling" structure
+    parse_coupling(file_c);
+    
+  }
+
+  //================================================== 
   // Coloring should go here
   // PETSC_COMM_WORLD = FERMI_Comm should go before petscinitialize
 
   FERMI_Comm = MPI_COMM_WORLD; // this should be change by a split
   init_coupling();  
+  PETSC_COMM_WORLD = FERMI_Comm;
 
 
 
@@ -215,10 +235,13 @@ int ferinit(int argc,char **argv)
 
 void init_coupling()
 {
+
 #ifdef COMMDOM 
-  commdom_create();
-/*
+
   int iargc;
+
+  commdom_create();
+
   for(iargc=0; iargc<argc; iargc++)
   {
     printf("%d) %s \n", iargc, argv[iargc]);
@@ -231,12 +254,10 @@ void init_coupling()
   commdom_get_argvs(my_name);
 
   commdom_set_names(trim(my_surname), len_trim(my_surname), trim(my_name), len_trim(my_name))
-  commdom_create_commij(world_comm, local_comm)
+  commdom_create_commij(world_comm, FERMI_Comm)
   MPI_Comm_rank(local_comm, local_rank, error)
   MPI_Comm_size(local_comm, local_size, error)
   commdom_get_commij_size(size_commij)
 
-  //commdom_delete(); 
-*/
 #endif
 }

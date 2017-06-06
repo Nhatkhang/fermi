@@ -1,5 +1,6 @@
 #include <petscksp.h>
 #include <slepceps.h>
+#include "stdbool.h"
 #include "list.h"
 #include "types.h"
 #include "mesh.h"
@@ -15,21 +16,23 @@ MPI_Comm FERMI_Comm;
 enum {QS, TR};      /*Quasi Static, transient*/
 enum {K1}; /*Calculation of elemental matrix by this K modes*/
 
+bool       couple_fl;
+coupling_t coupling;
 
 PetscViewer kspview;
 PetscViewer viewer;
 
-int rank;
-int nproc;   
-int nummat;                 
-        
-int *loc2gold, *loc2gnew;
-int ndir;
-int *npp;
-int ntot;
-int *dirIndex;
-double *dirValue;
-double *dirZeros;
+int        rank;
+int        nproc;   
+int        nummat;                 
+             
+int      * loc2gold, *loc2gnew;
+int        ndir;
+int      * npp;
+int        ntot;
+int      * dirIndex;
+double   * dirValue;
+double   * dirZeros;
                     
 int memory;
 

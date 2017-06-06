@@ -50,6 +50,7 @@ int cmp_bou(void *a, void *b);
 int cmp_time(void *a, void *b);
 int get_int(char *buf, const char *name,int *a);
 int get_char(char *buf, const char *name,char *a);
+int parse_coupling(const char file_c[]);
 
 int ferass_TR(int step);
 int ferass_ST(void);
