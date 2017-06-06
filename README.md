@@ -18,100 +18,23 @@ For reading this text in a `pdf` format do:
 pandoc README.md -V geometry:margin=.5in --latex-engine=xelatex -o README.pdf
 ```
 
-<!--###`OpenMPI` installation: 
-
-Download package from [www.open-mpi.org](www.open-mpi.org) and do:
-
-```bash
-gunzip -c openmpi-1.10.3.tar.gz | tar xf -
-cd openmpi-${version}
-```
-
-and with *root* privileges
-
-```bash
-./configure --prefix=/usr/local
-make all install
-```
-
-to check the instalation do:
-
-```bash
-   locate mpicc mpirun 
-   mpicc --version
-   mpirun --version  
-```-->
-
-###`BLAS & LAPACK` libraries
-
-```bash
-apt-get install libblas-dev liblapack-dev
-```  
-
 ###`PETSC` library
 
 Download it from [www.mcs.anl.gov/petsc](www.mcs.anl.gov/petsc) and do:
-
-```bash    
-   export PETSC_DIR=/path-to-petsc-installation-directory
-   export PETSC_ARCH=arch-linux2-c-opt    
-   LIBRARY_PATH=$LD_LIBRARY_PATH:/path-to-petsc-directory
-```  
-we recommend to put them in *.bashrc* or in some start up file
-
-```bash
-   tar -xvzf petsc-{version}
-   ./configure --with-cc=gcc --with-cxx=g++ --with-fc=gfortran --download-fblaslapack --download-mpich
-   make all 
-   make test
-```
 
 ###`SLEPc` library:
 
 Download it from [http://slepc.upv.es](http://slepc.upv.es) and do:
 
-```bash   
-   export SLEPC_DIR=/path-to-slepc-installation-directory 
-```
-
-we recommend to put them in `.bashrc` or in some start up file
-
-```bash
-   tar -xvzf slepc-{version} 
-   ./configure
-   make all
-   make test
-```
 ###`Fermi`:
 
 ```bash
    make
 ```
 
-##Running `Fermi` on multiple processors
-
-```bash
-   mpirun -np 2  fermi -mesh <mesh_file> -mat <mat_file> -vtk <vtk_file>
-```
-
-##Debbuging `Fermi` on multiple processors
-
-```bash
-   mpirun -np 2  xterm -e gdb --args fermi \
-                 -mesh  <mesh_file>        \ 
-                 -mat   <mat_file>         \
-                 -vtk   <vtk_file>         \
-                 -epmv  <epmv_file>        \
-                 -npmv  <npmv_file>        \
-                 -epms  <epms_file>        \
-                 -npms  <npms_file> 
-```   
-
 ## The future  
 
 Paralelization and performance evaluation 
-
-* Scripts to test the code
 
 * Benchmarking
 
