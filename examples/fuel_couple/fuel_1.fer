@@ -1,7 +1,5 @@
 $Mesh 
     mesh_file   fuel_1.msh
-#    parfile_n   cube_vol.metismesh.npart.4
-#    parfile_e   cube_vol.metismesh.epart.4
 $EndMesh 
 
 $Mode

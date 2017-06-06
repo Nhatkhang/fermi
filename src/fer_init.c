@@ -253,11 +253,11 @@ void init_coupling()
   commdom_analyse_argvs(token,&ntoken);
   commdom_get_argvs(my_name);
 
-  commdom_set_names(trim(my_surname), len_trim(my_surname), trim(my_name), len_trim(my_name))
-  commdom_create_commij(world_comm, FERMI_Comm)
-  MPI_Comm_rank(local_comm, local_rank, error)
-  MPI_Comm_size(local_comm, local_size, error)
-  commdom_get_commij_size(size_commij)
+  commdom_set_names(trim(my_surname), len_trim(my_surname), trim(my_name), len_trim(my_name));
+  commdom_create_commij(world_comm, FERMI_Comm);
+  MPI_Comm_rank(local_comm, local_rank);
+  MPI_Comm_size(local_comm, local_size);
+  commdom_get_commij_size(size_commij);
 
 #endif
 }

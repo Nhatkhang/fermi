@@ -945,10 +945,10 @@ int parse_coupling(const char file_c[])
 	  case 2:
 
 	    // read friend names
-	    coupling.friends = (char **) malloc(coupling.num_friends * sizeof(char*));
+	    coupling.friends = malloc(coupling.num_friends * sizeof(char*));
 	    for(i=0;i<coupling.num_friends;i++){
 
-	      coupling.friends[i] = (char *)malloc(64 * sizeof(char));
+	      coupling.friends[i] = malloc(64 * sizeof(char));
 
 	      if(data == NULL){
 		PetscPrintf(FERMI_Comm,"you should give at least %d friend names at line %d in %s.\n",

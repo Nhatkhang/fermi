@@ -9,7 +9,7 @@
 #ifdef __cplusplus
 extern "C" {  // fortran visibility!!
 #endif
-/*
+
   // loaders arrays
   void 
   commdomm_create(); 
@@ -40,7 +40,7 @@ extern "C" {  // fortran visibility!!
 
   void
   commdom_who_areyou(const char* fname, int* nname, int* ok); 
-*/
+
 #ifdef __cplusplus
 }
 #endif
