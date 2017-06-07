@@ -913,32 +913,14 @@ int parse_coupling(const char file_c[])
 	  case 0:
 
 	    // read world name
-	    if(!strcmp(data,"world")){
-
-	      data=strtok(NULL," \n");
-	      strcpy(coupling.world, data);
-
-	    }
-	    else{
-	      PetscPrintf(FERMI_Comm,"\"world\" expected at line %d in %s.\n", ln, file_c);
-	      return 1;
-	    }
+	    strcpy(coupling.world, data);
 	    fl ++;
 	    break;
 
 	  case 1:
 
-	    // read friend number of names
-	    if(!strcmp(data,"num_friends")){
-
-	      data=strtok(NULL," \n");
-	      coupling.num_friends = atoi(data);
-
-	    }
-	    else{
-	      PetscPrintf(FERMI_Comm,"\"num_friends\" expected at line %d in %s.\n", ln, file_c);
-	      return 1;
-	    }
+	    // read number of friend number
+	    coupling.num_friends = atoi(data);
 	    fl ++;
 	    break;
 
@@ -974,7 +956,7 @@ int parse_coupling(const char file_c[])
   }
 
   fclose(file);
-  return 1;
+  return 0;
 }
 
 /*****************************************************************************************************/

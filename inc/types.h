@@ -8,14 +8,14 @@
 
 enum {SEQUENCIAL, PARALLEL};
 
-typedef struct bit
-{
+typedef struct bit{
+
   unsigned int val : 1;
 
 }bit_t;
 
-typedef struct _propES_t
-{
+typedef struct _propES_t{
+
   int gmshid;  /* ID that correspond to evewry element in the gmshfile */
   int elemv;   /* The elemv local numeration at which belongs */
 

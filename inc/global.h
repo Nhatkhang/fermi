@@ -1,3 +1,9 @@
+/*
+
+   FERMI global variable declaration
+
+*/
+
 #include <petscksp.h>
 #include <slepceps.h>
 #include "stdbool.h"
@@ -11,10 +17,18 @@
 #define DIM 3
 #define NPE 8
 
-MPI_Comm FERMI_Comm;
+MPI_Comm  WORLD_Comm; // global communicator
+MPI_Comm  FERMI_Comm; // local  communicator
+MPI_Comm *INTER_Comm; // array of inter-communicators to communicate
+                      // with other codes
 
-enum {QS, TR};      /*Quasi Static, transient*/
-enum {K1}; /*Calculation of elemental matrix by this K modes*/
+int       globa_rank; // rank in WORLD_Comm
+int       globa_size; // size in WORLD_Comm
+int       local_rank; // rank in FERMI_Comm
+int       local_size; // size in FERMI_Comm
+
+enum {QS, TR};        /*Quasi Static, transient*/
+enum {K1};            /*Calculation of elemental matrix by this K modes*/
 
 bool       couple_fl;
 coupling_t coupling;

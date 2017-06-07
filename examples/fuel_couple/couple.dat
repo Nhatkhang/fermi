@@ -4,13 +4,13 @@
 
 # world context name all the coupling code should have 
 # the same name
-world        acople
+acople
 
 # number of friends in world
-num_friends  2
+1
 
-# friends names, the first is my name
-fermi control
+# friends names
+control
 
 #
 ###################################################

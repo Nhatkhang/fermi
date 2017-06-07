@@ -2,6 +2,11 @@
 
    Initialization FERMI routine 
 
+   Authors:
+
+   Guido Giuntoli
+   Miguel Zavala
+
 */
 
 #include "fermi.h"
@@ -18,10 +23,10 @@ int ferinit(int argc,char **argv)
 
    */
 
-  int    error, i, d, *ghost;
+  int    ierr, i, d, *ghost;
   char   file_c[64];
 
-  SlepcInitialize(&argc,&argv,(char*)0,NULL);
+  MPI_Init(&argc, &argv);
 
   //================================================== 
   // Read command line options 
@@ -29,35 +34,65 @@ int ferinit(int argc,char **argv)
   //
   // couple file if "-c" is not specified no coupling file is read
   //
-  PetscOptionsGetString(NULL,NULL,"-c",file_c,64,(PetscBool*)&couple_fl);
-
-  PetscPrintf(PETSC_COMM_WORLD,"coupling    : %d\n",couple_fl);
-
-  if( couple_fl == PETSC_TRUE ){
-    // fills the "coupling" structure
-    parse_coupling(file_c);
-    
+  couple_fl = false;
+  for(i=1; i<argc; i++){
+    if(strcmp(argv[i],"-c")==0){
+      couple_fl = true;
+      if(i == argc - 1){
+	return 1;
+      }
+      else{
+	i++;
+	strcpy(file_c,argv[i]);
+      }
+    }
   }
 
   //================================================== 
-  // Coloring should go here
-  // PETSC_COMM_WORLD = FERMI_Comm should go before petscinitialize
+  // Stablish communicators
+  //================================================== 
+  //
 
-  FERMI_Comm = MPI_COMM_WORLD; // this should be change by a split
-  init_coupling();  
+  WORLD_Comm = MPI_COMM_WORLD;
+
+  if( couple_fl == true ){
+    // FERMI is going to be coupled with another code
+#ifdef COMMDOM 
+    // so fills the "coupling" structure
+    ierr = parse_coupling(file_c);
+    if(ierr != 0){
+      return 1;
+    }
+    INTER_Comm = malloc(coupling.num_friends * sizeof(MPI_Comm));
+
+    ierr = init_coupling( &WORLD_Comm, &FERMI_Comm, INTER_Comm);
+#else
+    // coupling NO WAY !
+    // FERMI is the whole world
+    FERMI_Comm = WORLD_Comm;
+#endif
+
+  }
+  else{
+    FERMI_Comm = WORLD_Comm;
+  }
+
   PETSC_COMM_WORLD = FERMI_Comm;
+  MPI_Comm_rank(FERMI_Comm, &local_rank);
+  MPI_Comm_size(FERMI_Comm, &local_size);
+  nproc = local_size;
+  rank  = local_rank;
 
+  SlepcInitialize(&argc,&argv,(char*)0,NULL);
 
-  MPI_Comm_rank(FERMI_Comm, &rank);
-  MPI_Comm_size(FERMI_Comm, &nproc);  
   calcu.exec = (nproc>1)?PARALLEL:SEQUENCIAL;
-  if(argc == 1)
-  {
+  if(argc == 1){
     PetscPrintf(FERMI_Comm,"main.c:input file NS.\n\n"); 
     return 1;
   }
   //
   //============================== 
+
 
   //============================== 
   // PARCING INPUT FILE
@@ -69,10 +104,10 @@ int ferinit(int argc,char **argv)
   list_init(&list_ctrlr, sizeof(ctrlrod_t),NULL);
   strcpy(inputfile,argv[1]);
   PetscPrintf(FERMI_Comm,"Parcing input file.\n");
-  error=parse_input();
-  if(error!=0)
+  ierr=parse_input();
+  if(ierr!=0)
   {
-    PetscPrintf(FERMI_Comm,"main.c:error parsing input file.\n");
+    PetscPrintf(FERMI_Comm,"main.c:ierr parsing input file.\n");
     return 1;
   }
   //
@@ -88,10 +123,10 @@ int ferinit(int argc,char **argv)
   list_init(&list_elems, sizeof(gmshE_t), cmp_int);
   list_init(&list_physe, sizeof(gmshP_t), cmp_int);    
   PetscPrintf(FERMI_Comm,"Reading mesh.\n");
-  error=gmsh_read(meshfile,epartfile,npartfile,rank,DIM,&list_nodes,&list_ghost,&list_elemv,&list_elems,&list_physe,&loc2gold,&loc2gnew,&npp,nproc);    
-  if(error!=0)
+  ierr=gmsh_read(meshfile,epartfile,npartfile,rank,DIM,&list_nodes,&list_ghost,&list_elemv,&list_elems,&list_physe,&loc2gold,&loc2gnew,&npp,nproc);    
+  if(ierr!=0)
   {
-    PetscPrintf(FERMI_Comm,"main.c:error reading mesh.\n"); 
+    PetscPrintf(FERMI_Comm,"main.c:ierr reading mesh.\n"); 
     return 1;
   }
   ntot=0;
@@ -110,9 +145,9 @@ int ferinit(int argc,char **argv)
   //============================== 
   //     
   PetscPrintf(FERMI_Comm,"Printing structures 1.\n");
-  error = print_struct(1);   
-  if(error!=0){
-    PetscPrintf(FERMI_Comm,"main.c:error printing structures.\n"); 
+  ierr = print_struct(1);   
+  if(ierr!=0){
+    PetscPrintf(FERMI_Comm,"main.c:ierr printing structures.\n"); 
     return 1;
   }
   //
@@ -124,16 +159,16 @@ int ferinit(int argc,char **argv)
   //============================== 
   //      
   PetscPrintf(FERMI_Comm,"Constructing mesh.\n");
-  error=mesh_alloc(&list_nodes, &list_ghost, cpynode, &list_elemv, cpyelemv, &list_elems, cpyelems, &mesh);
-  if(error) 
+  ierr=mesh_alloc(&list_nodes, &list_ghost, cpynode, &list_elemv, cpyelemv, &list_elems, cpyelems, &mesh);
+  if(ierr) 
   {
-    PetscPrintf(FERMI_Comm,"main.c:error allocating mesh.\n"); 
+    PetscPrintf(FERMI_Comm,"main.c:ierr allocating mesh.\n"); 
     return 1;
   }
-  error=mesh_renum(&mesh,loc2gold,loc2gnew);
-  if(error)
+  ierr=mesh_renum(&mesh,loc2gold,loc2gnew);
+  if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:error renumbering mesh nodes.\n"); 
+    PetscPrintf(FERMI_Comm,"main.c:ierr renumbering mesh nodes.\n"); 
     return 1;
   }
   //
@@ -145,10 +180,10 @@ int ferinit(int argc,char **argv)
   //==============================      
   //      
   PetscPrintf(FERMI_Comm,"Initializing control rods.\n");
-  error=ferirods();
-  if(error)
+  ierr=ferirods();
+  if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:error control rods initialization.\n",error); 
+    PetscPrintf(FERMI_Comm,"main.c:ierr control rods initialization.\n",ierr); 
     return 1;
   }
   //      
@@ -157,10 +192,10 @@ int ferinit(int argc,char **argv)
   //==============================      
   //      
   PetscPrintf(FERMI_Comm,"Assemblying BCs.\n");
-  error=ferbouset();
-  if(error)
+  ierr=ferbouset();
+  if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:error assembling BCs.\n"); 
+    PetscPrintf(FERMI_Comm,"main.c:ierr assembling BCs.\n"); 
     return 1;
   }
   //
@@ -206,9 +241,9 @@ int ferinit(int argc,char **argv)
     coor[i]=(double*)calloc(DIM,sizeof(double));
 
   fem_inigau();
-  if(error)
+  if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:error gps init.\n\n"); 
+    PetscPrintf(FERMI_Comm,"main.c:ierr gps init.\n\n"); 
     return 1;
   }
 
@@ -241,10 +276,10 @@ int ferinit(int argc,char **argv)
   //============================== 
   //     
   PetscPrintf(FERMI_Comm,"Printing structures 2.\n");
-  error = print_struct(2);   
-  if(error)
+  ierr = print_struct(2);   
+  if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:error printing structures.\n"); 
+    PetscPrintf(FERMI_Comm,"main.c:ierr printing structures.\n"); 
     return 1;
   }
   return 0;
@@ -252,31 +287,33 @@ int ferinit(int argc,char **argv)
 
 
 
-void init_coupling()
+int init_coupling(MPI_Comm * world_comm, MPI_Comm * FERMI_Comm, MPI_Comm * INTER_Comm)
 {
+
+  /*
+     We initialize the local communicator FERMI_Comm and 
+     the inter-communicator array INTER_Comm[]
+
+  */
 
 #ifdef COMMDOM 
 
-  int iargc;
+  int   i;
+  int   ierr;
+  char  my_name[] = "fermi"; // name for PLEPP coupling scheme
 
   commdom_create();
+  commdom_set_names(coupling.world, my_name);
+  commdom_create_commij(world_comm, FERMI_Comm);
 
-  for(iargc=0; iargc<argc; iargc++)
-  {
-    printf("%d) %s \n", iargc, argv[iargc]);
+  // We travel all the friend of FERMI in order to get the inter-communicators
+  // created by commdom_create_commij
+  for(i=0; i < coupling.num_friends; i++){
+    commdom_get_commij(coupling.friends[i],&INTER_Comm[i]);
   }
 
-  char token[6] = "--name";
-  char my_name[6];
-  int  ntoken = 6;
-  commdom_analyse_argvs(token,&ntoken);
-  commdom_get_argvs(my_name);
-
-  commdom_set_names(trim(my_surname), len_trim(my_surname), trim(my_name), len_trim(my_name));
-  commdom_create_commij(world_comm, FERMI_Comm);
-  MPI_Comm_rank(local_comm, local_rank);
-  MPI_Comm_size(local_comm, local_size);
-  commdom_get_commij_size(size_commij);
-
 #endif
+
+  return 0;
+
 }

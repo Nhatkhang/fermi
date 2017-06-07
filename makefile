@@ -47,26 +47,29 @@ OBJ  = ${OBJ_DIR}/fer_main.o           \
 
 .PHONY: clean_
 
-COMMDOM=0
-ifneq ($(COMMDOM), 0)
-ROOT     = $(shell pwd)
-LIBPLEPP = $(ROOT)/lib/PLEPP/LIBPLEPP/
-LIBPLE   = $(ROOT)/lib/PLEPP/LIBPLE/
-CFLAGS  += -DCOMMDOM=$(COMMDOM)
-CFLAGS  += -I$(LIBPLEPP)/Include/
-CFLAGS  += -I$(LIBPLEPP)/Wrappers/CC/
-LIBS     = $(LIBPLEPP)/Wrappers/CC/libcommdom.a 
-LIBS    += $(LIBPLE)/Execs/lib/libple.a 
+PLEPP=0
+ifneq ($(PLEPP), 0)
+ ROOT     = $(shell pwd)
+ LIBPLEPP = $(ROOT)/lib/PLEPP/LIBPLEPP
+ LIBPLE   = $(ROOT)/lib/PLEPP/LIBPLE
+ CFLAGS  += -DCOMMDOM=$(COMMDOM)
+ CFLAGS  += -I$(LIBPLEPP)/Include
+ CFLAGS  += -I$(LIBPLEPP)/Wrappers/CC
+ LIBS     = $(LIBPLEPP)/Wrappers/CC/libcommdom.a 
+ LIBS    += $(LIBPLE)/Execs/lib/libple.a 
 endif
 
 all: ${OBJ} 
-	mpicc -o fermi $(LIBS) $^ ${SLEPC_EPS_LIB} 
+	mpicc -o fermi  $^ $(LIBS) ${SLEPC_EPS_LIB} 
 	
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c $(DEPS) 
 	${PETSC_COMPILE} -c ${CFLAGS} -o $@ $< -I${DEP_DIR}
 
 clean_:	    
 	rm -f $(OBJ) fermi
+
+vars:
+	@echo $(LIBS)
 
 include ${PETSC_DIR}/lib/petsc/conf/variables	
 include ${SLEPC_DIR}/lib/slepc/conf/slepc_common
