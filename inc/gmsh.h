@@ -41,6 +41,7 @@ int gmsh_readelemv(char *file,int nproc,char *nfile,int rank,int dim,list_t *lis
 int gmsh_readelems(char *file,int dim,list_t *list_elemv,list_t *list_elems);
 int gmsh_readphys(char *file,list_t *list_elemv,list_t *list_elems,list_t *list_phyce);
 int gmsh_reenumerate(char *nfile,int rank,list_t *list_nodes,list_t *list_ghost,int **loc2gold,int **loc2gnew,int **npp,int nproc);
+int gmsh_phys_elmlist(list_t *list_elemv, list_t *list_physe);
 int gmsh_elems_belongs(list_t *list_elemv,gmshE_t *elems,int *nelemv);
 int gmsh_phys_belongs(list_t *list_elemv,list_t *list_elems,gmshP_t *phys);
 int gmsh_isvol(int code,int dim);

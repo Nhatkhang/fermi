@@ -93,13 +93,17 @@ int fer_pow_phys( int n, int * ids, double *fpower )
 
   /* 
      Calculates the fission power the "n" physicals entities with "ids" 
+
+     Authors: 
+
+     Guido Giuntoli
+
   */
 
   int           e, p;
   int           error;
   double        power_l, power_e;
   node_list_t * pe, * pp;
-
 
   p = 0;
   while( p < n ){
@@ -141,11 +145,15 @@ int fer_pow_phys( int n, int * ids, double *fpower )
 int fer_pow_elem(int e, double *power_e)
 {
 
-    /* 
-       This functions calculates the power dissipated on mesh element "e". 
-       The result is saved on "power_e"
+  /* 
+     This functions calculates the power generated on mesh element "e". 
+     The result is saved on "power_e"
 
-    */
+     Authors: 
+     
+     Guido Giuntoli
+
+   */
 
     int      g, gp, i, d;
     int      npe, ngp, locind;

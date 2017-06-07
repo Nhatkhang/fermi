@@ -1,11 +1,21 @@
+/*
+
+   Initialization FERMI routine 
+
+*/
+
 #include "fermi.h"
 
 int ferinit(int argc,char **argv)
 {
-  /* Reads the imput file
-   * Reads the mesh
-   * Reads the mesh
-   * Allocs mamory for K, x, b
+
+  /* 
+
+     Reads the input file
+     Reads the mesh
+     Reads the mesh
+     Allocs mamory for K, x, b
+
    */
 
   int    error, i, d, *ghost;
@@ -38,7 +48,6 @@ int ferinit(int argc,char **argv)
   PETSC_COMM_WORLD = FERMI_Comm;
 
 
-
   MPI_Comm_rank(FERMI_Comm, &rank);
   MPI_Comm_size(FERMI_Comm, &nproc);  
   calcu.exec = (nproc>1)?PARALLEL:SEQUENCIAL;
@@ -47,7 +56,9 @@ int ferinit(int argc,char **argv)
     PetscPrintf(FERMI_Comm,"main.c:input file NS.\n\n"); 
     return 1;
   }
-  //  
+  //
+  //============================== 
+
   //============================== 
   // PARCING INPUT FILE
   //============================== 
@@ -65,6 +76,8 @@ int ferinit(int argc,char **argv)
     return 1;
   }
   //
+  //============================== 
+
   //============================== 
   // READING MESH 
   //============================== 
@@ -84,7 +97,14 @@ int ferinit(int argc,char **argv)
   ntot=0;
   for(i=0;i<nproc;i++)
     ntot+=npp[i];
+
+  // complete the volume element list inside each 
+  // physical entity
+  gmsh_phys_elmlist(&list_elemv,&list_physe); 
+
   //
+  //============================== 
+
   //============================== 
   // PRINTING STRUCTURES
   //============================== 
@@ -95,6 +115,8 @@ int ferinit(int argc,char **argv)
     PetscPrintf(FERMI_Comm,"main.c:error printing structures.\n"); 
     return 1;
   }
+  //
+  //============================== 
 
   //
   //============================== 
@@ -114,12 +136,8 @@ int ferinit(int argc,char **argv)
     PetscPrintf(FERMI_Comm,"main.c:error renumbering mesh nodes.\n"); 
     return 1;
   }
-//  error=mesh_neigh(&mesh,loc2gnew);
-//  if(error)
-//  {
-//    PetscPrintf(FERMI_Comm,"main.c: Error calculating mesh neightbors.\n",error); 
-//    return 1;
-//  }
+  //
+  //============================== 
 
   //      
   //==============================      
@@ -145,7 +163,9 @@ int ferinit(int argc,char **argv)
     PetscPrintf(FERMI_Comm,"main.c:error assembling BCs.\n"); 
     return 1;
   }
-  //      
+  //
+  //============================== 
+  
   //==============================      
   // ALLOCATING MATRICES/VECTORS 
   //==============================      
@@ -192,7 +212,6 @@ int ferinit(int argc,char **argv)
     return 1;
   }
 
-  //      
   //==============================      
   // SETTING SOLVER
   //==============================      

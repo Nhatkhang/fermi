@@ -23,3 +23,5 @@ fermi
 *.lo
 *.o
 *.swp
+*.a
+*.la

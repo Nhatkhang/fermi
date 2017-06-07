@@ -1,3 +1,12 @@
+/*
+
+   Gmsh's meshes functions utilities using linked lists
+
+   Authors:
+   
+   Guido Giuntoli
+
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -458,6 +467,52 @@ int gmsh_elems_belongs(list_t *list_elemv,gmshE_t *elems,int *nelemv){
         ne++;
     }    
     return 0;
+}
+
+int gmsh_phys_elmlist(list_t *list_elemv, list_t *list_physe)
+{
+
+  /* 
+     completes the "elemv" list_t on each element of "list_physe"
+
+     Generally this function is used separatelly for special purposes
+
+   */
+
+    int           e;
+    node_list_t   *pe, *pp;
+
+    // list initialization
+    pp = list_physe->head;
+    while(pp != NULL){
+      list_init(&(((gmshP_t*)pp->data)->elem), sizeof(int), NULL);    
+      pp = pp->next;
+    }
+
+    // travel arround all elements and add them to phys_list 
+    // in the corresponding node
+    e = 0; 
+    pe = list_elemv->head;
+    while(pe != NULL){
+      pp = list_physe->head;
+      while(pp != NULL){
+        if(((gmshE_t*)pe->data)->gmshid == ((gmshP_t*)pp->data)->gmshid  ){
+          break;
+	}
+	else{
+	  pp = pp->next;
+	}
+      }
+      if(pp == NULL){
+	return 1;
+      }
+      // add element "e" to the list
+      list_insertlast(&(((gmshP_t*)pp->data)->elem), (void *)&e);
+      e ++;
+      pe = pe->next;
+    }
+
+    return 0;   
 }
 
 int gmsh_phys_belongs(list_t *list_elemv,list_t *list_elems,gmshP_t *phys){
