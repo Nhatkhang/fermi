@@ -1,4 +1,5 @@
 //#include "commdom.hpp"
+#include "mpi.h"
 
 //=======================================================================||===//
 //=======================================================================||===//
@@ -26,16 +27,16 @@ extern "C" {  // fortran visibility!!
 
 
   void 
-  commdom_set_names(const char*, int*, const char*, int*);
+  commdom_set_names(const char*, const char*);
   
   void 
-  commdom_create_commij(int*, int*);
+  commdom_create_commij(MPI_Comm*, MPI_Comm*);
 
   void
   commdom_get_commij_size(int*);
 
   void
-  commdom_get_commij(char*, int*, int*); 
+  commdom_get_commij(char*, MPI_Comm*); 
 /*
   void 
   commdom_sendrecv_int(int*, int*, int*, int*, int*, int*);

@@ -22,9 +22,9 @@ libcommdom:
 
 
 static: 
-	$(CPPCOMPILER) -c $(INCLUDES)/build_octree.c $(INCLUDE_PLE) 
-	$(CPPCOMPILER) -c $(INCLUDES)/commdom.cpp $(INCLUDE_PLE) $(FLAGS) 
-	$(CCOMPILER) -c commdom_wrapper.cpp $(INCLUDE_PLE) $(FLAGS) 
+	$(CPPCOMPILER) -c -g $(INCLUDES)/build_octree.c $(INCLUDE_PLE) 
+	$(CPPCOMPILER) -c -g $(INCLUDES)/commdom.cpp $(INCLUDE_PLE) $(FLAGS) 
+	$(CCOMPILER) -c -g commdom_wrapper.cpp $(INCLUDE_PLE) $(FLAGS) 
 	$(STATIC) libcommdom.a build_octree.o commdom.o commdom_wrapper.o $(ROOT_PLE)/lib/libple.a #-lmpi_cxx 
 
 

@@ -1,5 +1,6 @@
 #include "commdom_wrapper.h"
 #include "commdom.hpp"
+#include "mpi.h"
 #include <iterator>
 
 //=======================================================================||===//
@@ -61,10 +62,10 @@ extern "C"
 
 
   void 
-  commdom_set_names(const char* ftype, int* ntype, const char* fname, int* nname)
+  commdom_set_names(const char* ftype, const char* fname)
   {
-    std::string  ctype( ptr_class->string_f2c(ftype, ntype[0]) );
-    std::string  cname( ptr_class->string_f2c(fname, nname[0]) );
+    std::string  ctype( ftype );
+    std::string  cname( fname );
 
     const std::string     to_split( cname ); 
     const vector<string>  words = ptr_class->__split_string__(to_split, "/"); 
@@ -79,33 +80,16 @@ extern "C"
 
 
   void 
-  commdom_create_commij(int* fcomm, int* lcomm)
+  commdom_create_commij(MPI_Comm * world_comm, MPI_Comm * local_comm)
   {
     int app_id = -1;
     int n_apps = -1; 
-    MPI_Comm  world_comm = MPI_Comm_f2c( fcomm[0] );
-    ptr_class->set_world_comm(world_comm);
-    // NOTE: 
-    // there exit the posibility that 
-    // will be changed 'world_comm'
+    ptr_class->set_world_comm(*world_comm);
 
-    MPI_Comm  new_world_comm = MPI_COMM_NULL; 
-    new_world_comm = ptr_class->__get_world_comm__();
-    fcomm[0] = MPI_Comm_c2f( new_world_comm );
-
-
-    MPI_Comm  local_comm = MPI_COMM_NULL; 
-    ptr_class->name_to_id(&app_id, &n_apps, &local_comm);
-
-    //ptr_class->__print_comm__(local_comm); 
-    //ptr_class->__print_comm__(world_comm); 
-    //ptr_class->print_commij_names(); 
-
+    *local_comm = MPI_COMM_NULL; 
+    ptr_class->name_to_id(&app_id, &n_apps, local_comm);
     ptr_class->__create_interaction__(); 
-    ptr_class->create_commij(local_comm);
-
-    lcomm[0] = MPI_Comm_c2f(local_comm);
-
+    ptr_class->create_commij(*local_comm);
   } 
 
 
@@ -163,13 +147,12 @@ extern "C"
 
 
   void 
-  commdom_get_commij(char* fnamej, int* nnamej, int* fcommij)
+  commdom_get_commij(char* fnamej, MPI_Comm* fcommij)
   {
-    std::string cnamej( ptr_class->string_f2c(fnamej, nnamej[0]) );
+    std::string cnamej( fnamej ); //ptr_class->string_f2c(fnamej, nnamej[0]) );
     
     MPI_Comm commij = MPI_COMM_NULL; 
-    ptr_class->get_commij(cnamej, &commij); 
-    fcommij[0] = MPI_Comm_c2f(commij);
+    ptr_class->get_commij(cnamej, fcommij); 
   }
 
 

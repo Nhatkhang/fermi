@@ -27,42 +27,52 @@ int main(int argc,char **argv)
   int    globa_size = -1;
   int    local_rank = -1;
   int    local_size = -1;
-  int    sw, sm;
   int    size_commij;
 
   char   file_c[64];
 
-  
-  MPI_Comm WORLD_Comm;   // Global communicator
-  MPI_Comm CONTROL_Comm; // Local communicator
-  MPI_Comm INTER_Comm;   // Inter-communicator
+  MPI_Comm WORLD_Comm   = MPI_COMM_WORLD; // Global communicator
+  MPI_Comm CONTROL_Comm = MPI_COMM_NULL ; // Local communicator
 
   MPI_Init(&argc, &argv);
-
-  WORLD_Comm   = MPI_COMM_WORLD;
-  CONTROL_Comm = MPI_COMM_NULL;
-  INTER_Comm   = MPI_COMM_NULL;
 
   MPI_Comm_rank(WORLD_Comm, &globa_rank);
   MPI_Comm_size(WORLD_Comm, &globa_size);
   printf("control.c : globa_rank = %d globa_size = %d\n", globa_rank, globa_size);
 
-  char world[]   = "acople";
-  char my_name[] = "control";
-  char Friend[]  = "fermi";
+  char world[]     = "acople";
+  char my_name[]   = "control" ;
+  char my_friend[] = "fermi";
 
   commdom_create();
 
-  sw = sizeof(world);
-  sm = sizeof(my_name);
-  commdom_set_names( world, &sw, my_name, &sm);
-  commdom_create_commij((int*)&WORLD_Comm, (int*)&CONTROL_Comm);
+  commdom_set_names( world, my_name);
+  
+  // We create local communicators (collective = split inside)
+  commdom_create_commij(&WORLD_Comm, &CONTROL_Comm);
+
   MPI_Comm_rank(CONTROL_Comm, &local_rank);
   MPI_Comm_size(CONTROL_Comm, &local_size);
-  printf("control.c : local_rank = %d local_size = %d\n", local_rank, local_size);
-  commdom_get_commij_size(&size_commij);
-  
+  printf("control.c : globa_rank = %d CONTROL_Comm = %d\n", globa_rank, CONTROL_Comm);
+
+  int      inter_size;
+  int      inter_rank;
+  MPI_Comm INTER_Comm   = MPI_COMM_NULL ; // Inter-communicator
+
+  // We get the inter-communicator to talk with FERMI
+  commdom_get_commij(my_friend, &INTER_Comm); 
+
+  MPI_Comm_rank(INTER_Comm, &inter_rank);
+  MPI_Comm_size(INTER_Comm, &inter_size);
+  printf("\ncontrol.c : inter_rank = %d inter_size = %d \n", inter_rank, inter_size);
+
+  // We are ready to send cross sections here doing Bcast with INTER_Comm
+  // and receiving powers with Recv (can be reduced by rank 0 in 0 and the send by him)
+  //
+  // ...
+
+  //
   MPI_Finalize();
 
   return 0;
-}
+} 
