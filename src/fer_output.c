@@ -31,6 +31,7 @@
 
 int print_struct(int step)
 {
+
   char file_name[64];
   int  i,d,e,*pInt;
   gmshN_t * p_gmsh_node;
@@ -341,10 +342,8 @@ int print_out(Vec *phi, int step)
   */
 
   int           i;
-  int           indeces[10];
   int           step_o;
   int           error;
-  double        values[10];
   Vec           x_local;
   node_list_t * pNod;
   output_t    * po;
@@ -381,26 +380,26 @@ int print_out(Vec *phi, int step)
 
       case 2:
 
-        /* 
+	/*
+	   kind = 2  
 
-           plots f_int(n) vs u(n) being n a node specified by phys 
-           the index is saved on po->params_i[0]  
+	   power on different physical entities on ASCII file
+	   file <file.dat>
+	   nphy <num_of_phys>
+	   "phys_1" "phys_2" ... "phys_n"
 
-           $Output
-             file f_vs_u.dat
-             kind 2
-             phys "MOV_B"
-           $EndOutput
+	 */
+	fer_pow_phys( po.kind_2.nphy, po.kind_2.ids, po.kind_2.pow );
 
-        */
+        MPI_Reduce(po.kind_2.pow, po.kind_2.nphy, MPI_DOUBLE, MPI_SUM, 0, FERMI_Comm);
 
-//        for(i=0;i<3;i++){
-//          indeces[0+i] = po->kind_2.node * DIM + i;
-//        }
+	if(local_rank == 0){
+	  for(i=0;i<po.kind_2.nphy;i++){
+	    printf(po.kind_2.fp, "%e ",po.kind_2.pow[i]);
+	  }
+	  printf(po.kind_2.fp, "\n");
+	}
 
-//        VecGetValues(u_local,3,indeces,&values[0]);
-//        VecGetValues(f_local,3,indeces,&values[3]);
-//        fprintf(po->kind_2.fp,"%e %e %e %e %e %e\n",values[0],values[1],values[2],values[3],values[4],values[5]);
         break;
 
       case 3:
