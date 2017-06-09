@@ -29,6 +29,7 @@ int parse_input(void){
   if(parse_boun())return 5; 
   if(parse_crod())return 6; 
   if(parse_outp())return 7; 
+  if(parse_comm())return 7; 
   return 0;
 }
 
@@ -156,6 +157,16 @@ int parse_mats(void)
             return 1;
           }
           veloc=(double*)calloc(egn,sizeof(double));
+	  switch(egn){
+	    case 1:
+	      nxs_mat=5;
+	      break;
+	    case 2:
+	      nxs_mat=12;
+	      break;
+	    default:
+	      return 1;
+	  }
           com=com|1;
         }else if(!strcmp(data,"pgn"))
         {
@@ -809,6 +820,128 @@ int parse_outp(void)
       if(fl==1)
 	fl=2;
     }
+  }
+  fclose(file);
+  return 0;
+}
+
+/*****************************************************************************************************/
+
+int parse_comm(void)
+{
+
+  /*
+     Parse for $Communication word on input file
+
+     The user is able to specify what "kind" 
+     of communication wants to perform 
+     
+     kind 1: means (recv) cross sections (send) powers
+
+     Notes:
+
+     -> $Communication could be repeated various time on input 
+     file with different arguments (and the same on a wrong 
+     implementation)
+
+   */
+
+  FILE      *file= fopen(inputfile,"r");
+  char      *data,buf[NBUF], buf_a[NBUF];
+  int       fl, ln, i;
+  comm_t    comm;
+
+  ln = 0;
+  fl = 0;
+  while(fgets(buf,NBUF,file)){
+    ln++;
+    strcpy(buf_a, buf);
+    data=strtok(buf_a," \n");
+
+    if(data){ // if the line is not empty
+
+      if(!strcmp(data,"$Communication")){
+	fl=1;
+      }
+      else if(!strcmp(data,"$EndCommunication")){
+	  list_insertlast(&list_comms,(void*)&comm);
+	}
+	fl = 0;
+      }
+
+      if(fl==2 && data[0]!='#'){
+
+	// we are in the line after $Output
+	if( get_int(buf,"kind",&comm.kind)) 
+	  return 1;  
+
+	switch(comm.kind){
+
+	  case 1:
+	    break;
+
+	  case 2:
+
+	    /*
+	       kind     2
+	       friend   <friend_name>
+	       nphy     <num_of_phys>
+	       <phys_1> <phys_2>      ... <phys_n>
+
+               -> friend is the program to communicate information
+	       -> xs    on different physical are going to be recv
+	       -> power on different physical are going to be send
+
+	     */
+
+	    if(!fgets(buf,NBUF,file)) 
+	      return 1;
+	    ln ++;
+
+	    if( get_char(buf,"file",comm.comm_1.friend_name)) 
+	      return 1;
+
+	    if(!fgets(buf,NBUF,file)) 
+	      return 1;
+	    ln ++;
+
+	    if( get_int(buf,"nphy",&comm.comm_1.nphy)) 
+	      return 1;  
+	      		
+	    comm.comm_1.phys = malloc(comm.comm_1.nphy*sizeof(char*));
+	    comm.comm_1.ids  = malloc(comm.comm_1.nphy*sizeof(int*));
+	    comm.comm_1.pow  = malloc(comm.comm_1.nphy*sizeof(double*));
+	    comm.comm_1.xs   = malloc(comm.comm_1.nphy * nxs_mat *sizeof(double*));
+
+	    for(i = 0; i < comm.comm_1.nphy; i++){
+	      comm.comm_1.phys[i] = (char *)malloc(16*sizeof(char));
+	    }
+
+	    if(!fgets(buf,NBUF,file)) 
+	      return 1;
+	    ln ++;
+
+	    // now we read the physical entities names
+	    data = strtok(buf," \n");
+	    i = 0;
+	    while(i < comm.comm_1.nphy && data != NULL){
+	      strcpy( comm.comm_1.phys[i],data);
+	      data = strtok(NULL," \n");
+	      i++;
+	    }
+	    if( i != comm.comm_1.nphy ){
+	      return 1;
+	    }
+
+	    break;
+
+	  default:
+	    break;
+	}
+
+      }
+      if(fl==1)
+	fl=2;
   }
   fclose(file);
   return 0;

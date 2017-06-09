@@ -30,3 +30,10 @@ $Output
   nphy 2
   "FUEL_Z1" "FLUID_Z1"
 $EndOutput
+
+$Communication
+  kind   1
+  friend control
+  nphy   2
+  "FUEL_Z1" "FLUID_Z1"
+$EndCommunication

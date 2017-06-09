@@ -60,6 +60,7 @@ list_t list_bound;
 list_t list_fun1d; /* list of functions */
 list_t list_ctrlr; /* list of control rods */
 list_t list_outpu;
+list_t list_comms;
 
 mesh_t mesh;
 
@@ -85,6 +86,7 @@ int      *idxm;
 double   **der,***ode,**sh,**jac,**ijac,**coor,*wp;
 
 int      egn, pgn;
+int      nxs_mat;      // number of xs values per material
 double   **phi;
 double   power;
 double   vol;

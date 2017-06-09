@@ -80,7 +80,7 @@ typedef struct _kind_2_t{
 
   FILE     * fp;
   char       file[16];
-  char    ** phys;     // array of string where we are going to save the phys names
+  char    ** phys;     // array of Physical Entities names
   int        nphy;
   int      * ids ;
   double   * pow;
@@ -107,17 +107,22 @@ typedef struct _output_t{
 
 typedef struct _comm_1_t{
 
+  char     friend_name[64];
+  int      nphy;
+  char     **phys;         // array of Physical Entities names
+  int      *ids ;
+
   /* recv */
   int      inp_signal;
   double   *xs;
 
   /* send */
-  int        out_signal;
+  int       out_signal;
   double   *pow;
 
 }comm_1_t;
 
-typedef struct _comm_t
+typedef struct _comm_t{
 
   int        kind;
 
