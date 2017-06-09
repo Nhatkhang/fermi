@@ -103,6 +103,30 @@ typedef struct _output_t{
 
 /*************************************************************/
 
+/* Structures to communicate information with other codes using PLEPP */
+
+typedef struct _comm_1_t{
+
+  /* recv */
+  int      inp_signal;
+  double   *xs;
+
+  /* send */
+  int        out_signal;
+  double   *pow;
+
+}comm_1_t;
+
+typedef struct _comm_t
+
+  int        kind;
+
+  comm_1_t   comm_1;
+
+}comm_t;
+
+/*************************************************************/
+
 typedef struct _tcontrol_t{
 
   double tf;
