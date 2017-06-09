@@ -6,7 +6,7 @@ $Mode
   timedep QSTATIC 
   p0 2.5e6  
   t0 0.0
-  tf 0.05
+  tf 0.15
   dt 0.05
 $EndMode
 
@@ -26,7 +26,7 @@ $EndBoundary
 $Output
   # Power in physical entities
   kind 2
-  file "pow_phys.dat"
+  file pow_phys.dat
   nphy 2
   "FUEL_Z1" "FLUID_Z1"
 $EndOutput

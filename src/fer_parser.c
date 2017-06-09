@@ -753,9 +753,9 @@ int parse_outp(void)
 
 	  case 2:
 
-	    /* 
-
+	    /*
 	       kind = 2  
+
 	       power on different physical entities on ASCII file
 	       file <file.dat>
 	       nphy <num_of_phys>
@@ -776,7 +776,9 @@ int parse_outp(void)
 
 	    if( get_int(buf,"nphy",&output.kind_2.nphy)) 
 	      return 1;  
-	    output.kind_2.phys = (char **)malloc(output.kind_2.nphy*sizeof(char*));
+	    output.kind_2.phys = malloc(output.kind_2.nphy*sizeof(char*));
+	    output.kind_2.ids  = malloc(output.kind_2.nphy*sizeof(int*));
+	    output.kind_2.pow  = malloc(output.kind_2.nphy*sizeof(double*));
 	    for(i = 0; i < output.kind_2.nphy; i++){
 	      output.kind_2.phys[i] = (char *)malloc(16*sizeof(char));
 	    }

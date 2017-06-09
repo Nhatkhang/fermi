@@ -27,6 +27,7 @@ int main(int argc,char **argv)
 
       sprintf(nam,"steady_r%d_t%d",rank,step);
       print_vtk(nam);
+      print_out(&phi_n, step);
 
       calcu.t=calcu.t + dtn;
       step ++;

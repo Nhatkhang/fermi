@@ -90,6 +90,7 @@ int printVector(char *name,double *vec, int m);
 int printMat(char *name,Mat *A, int m);
 int printVec(char *name,Vec *vec, int m);
 int vtkcode(int dim,int npe);
+int print_out(Vec *phi, int step);
 
 //fer_couple.c
 int fer_couple(int order, MPI_Comm * couple_comm, char * server_n);

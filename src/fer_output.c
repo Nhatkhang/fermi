@@ -40,7 +40,7 @@ int print_struct(int step)
   node_list_t * onode,*pNod;
   ps_t    * ps;
 
-  sprintf(file_name,"struct_r%d_s%d.bathe",rank,step);
+  sprintf(file_name,"struct_r%d_s%d.dat",rank,step);
 
   FILE *fout = fopen(file_name,"w");
 
@@ -336,13 +336,13 @@ int print_out(Vec *phi, int step)
 {
 
   /*
-  It travels all the list.outpu and determines if it has to print something
-  in this time step "step" the kind of the structure output_t means what it 
-  has to print 
-  */
+     It travels all the list.outpu and determines if it has to print something
+     in this time step "step" the kind of the structure output_t means what it 
+     has to print 
+
+   */
 
   int           i;
-  int           step_o;
   int           error;
   Vec           x_local;
   node_list_t * pNod;
@@ -381,68 +381,25 @@ int print_out(Vec *phi, int step)
       case 2:
 
 	/*
-	   kind = 2  
+	   prints power on different physical entities on ASCII file
 
-	   power on different physical entities on ASCII file
-	   file <file.dat>
-	   nphy <num_of_phys>
-	   "phys_1" "phys_2" ... "phys_n"
+	   kind = 2  
+	   file <file_name.dat>
+	   nphy <# of physical entities>
+	   <"phys_1"> <"phys_2"> ... <"phys_n">
 
 	 */
-	fer_pow_phys( po.kind_2.nphy, po.kind_2.ids, po.kind_2.pow );
 
-        MPI_Reduce(po.kind_2.pow, po.kind_2.nphy, MPI_DOUBLE, MPI_SUM, 0, FERMI_Comm);
+	fer_pow_phys( po->kind_2.nphy, po->kind_2.ids, po->kind_2.pow );
 
 	if(local_rank == 0){
-	  for(i=0;i<po.kind_2.nphy;i++){
-	    printf(po.kind_2.fp, "%e ",po.kind_2.pow[i]);
+	  for(i=0;i<po->kind_2.nphy;i++){
+	    fprintf(po->kind_2.fp, "%e ",po->kind_2.pow[i]);
 	  }
-	  printf(po.kind_2.fp, "\n");
+	  fprintf(po->kind_2.fp, "\n");
 	}
 
         break;
-
-      case 3:
-
-        /* 
-           plots averange damage on elements on a vtk file, the total damage is printed on a file 
-           an is the total on those elements with physical entity physe 
-
-           $Output
-             kind 3
-             step 10
-             phys "MAT"
-           $EndOutput
-           
-           output : damage_s#_r#.vtk    d, tau on elements
-         */
-
-//        step_o = po->kind_3.step;
-//
-//        if(step % step_o == 0){
-//          error = print_vtk_damage(step, u);
-//        }
-//        break;
-//
-      case 4:
-
-        /* 
-           plots f_int, f_ext and u vectors in a vtk format
-
-           $Output
-             kind 4
-             step 10
-           $EndOutput
-           
-           output : ffu_s#_r#.vtk    d, tau on elements
-         */
-
-//        step_o = po->kind_4.step;
-//
-//        if(step % step_o == 0){
-//          error = print_vtk_forces( step, f_int, f_ext, u);
-//        }
-//        break;
 
       default:
         return 1;

@@ -5,11 +5,39 @@
 int ferfini(void)
 {
 
-    // eliminamos las estructuras de comunicadores
-    // e intercomunicadores
-//    commdom_delete(); 
+  //================================================================================ 
+  // CLOSING OUTPUT FILES (in those who need it)
+  //================================================================================ 
+  //    
+  node_list_t  * pn;
+  output_t    * po;
+  pn = list_outpu.head;
+  while(pn){
+    po = (output_t *)pn->data;
+    switch (po->kind){
 
-    SlepcFinalize();
-    
-    return 0;
+      case 1:
+	break;
+
+      case 2:
+	// power on physical entities as a function of time 
+	fclose(po->kind_2.fp);
+	break;
+
+      default:
+	return 1;
+
+    }
+    pn = pn->next;
+  }
+  //
+  //================================================================================ 
+
+  // eliminamos las estructuras de comunicadores
+  // e intercomunicadores
+  //    commdom_delete(); 
+
+  SlepcFinalize();
+
+  return 0;
 }

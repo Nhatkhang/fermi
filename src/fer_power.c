@@ -115,7 +115,7 @@ int fer_pow_phys( int n, int * ids, double *fpower )
 
 	      // Recorremos todos los elmentos de esa physical entity y calculamos power_l para este proceso
 	      power_l = 0.0;
-	      pe = ((gmshP_t*)pe->data)->elem.head; 
+	      pe = ((gmshP_t*)pp->data)->elem.head; 
 	      while( pe != NULL ){
                   e   = *((int *)pe->data);
 		  fer_pow_elem(e, &power_e);

@@ -52,7 +52,6 @@ int ferinit(int argc,char **argv)
   // Stablish communicators
   //================================================== 
   //
-
   WORLD_Comm = MPI_COMM_WORLD;
 
   if( couple_fl == true ){
@@ -102,6 +101,7 @@ int ferinit(int argc,char **argv)
   list_init(&list_bound, sizeof(bound_t),cmp_bou);
   list_init(&list_fun1d, sizeof(bound_t),cmp_f1d);
   list_init(&list_ctrlr, sizeof(ctrlrod_t),NULL);
+  list_init(&list_outpu, sizeof(output_t),NULL);
   strcpy(inputfile,argv[1]);
   PetscPrintf(FERMI_Comm,"Parcing input file.\n");
   ierr=parse_input();
@@ -111,7 +111,8 @@ int ferinit(int argc,char **argv)
     return 1;
   }
   //
-  //============================== 
+  //================================================================================ 
+
 
   //============================== 
   // READING MESH 
@@ -136,9 +137,54 @@ int ferinit(int argc,char **argv)
   // complete the volume element list inside each 
   // physical entity
   gmsh_phys_elmlist(&list_elemv,&list_physe); 
-
   //
   //============================== 
+
+  //================================================================================ 
+  // OUTPUT INITIALIZATION
+  //================================================================================ 
+  //    
+  //  Here we open some file if the kind requiere them
+  //
+  node_list_t  * pn, * pp;
+  output_t     * po;
+  pn = list_outpu.head;
+  while(pn){
+    po = (output_t *)pn->data;
+    switch (po->kind){
+
+      case 1:
+	break;
+
+      case 2:
+        // power on physical entities as a function of time 
+	po->kind_2.fp = fopen(po->kind_2.file,"w");
+	// we try to find the gmshid of the physical entities specified on input file
+	// and save them on "ids" array inside kind_2
+	for(i=0; i < po->kind_2.nphy; i++){
+	  pp = list_physe.head;
+	  while(strcmp(po->kind_2.phys[i],((gmshP_t*)pp->data)->name) != 0 ){
+	    pp = pp->next;
+	  }
+	  if(pp != NULL){
+	    po->kind_2.ids[i] = ((gmshP_t*)pp->data)->gmshid;
+	  }
+	  else{
+	    PetscPrintf(FERMI_Comm,"Physical entity %s not found in gmsh file.\n",po->kind_2.phys[i]); 
+	    return 1;
+	  }
+	}
+
+	break;
+
+      default:
+	return 1;
+
+    }
+    pn = pn->next;
+  }
+  //
+  //================================================================================ 
 
   //============================== 
   // PRINTING STRUCTURES
@@ -247,6 +293,7 @@ int ferinit(int argc,char **argv)
     return 1;
   }
 
+
   //==============================      
   // SETTING SOLVER
   //==============================      
@@ -270,7 +317,6 @@ int ferinit(int argc,char **argv)
  // EPSCreate(FERMI_Comm,&eps);
  // EPSSetProblemType(eps,EPS_GNHEP);
 
-  //      
   //============================== 
   // PRINTING STRUCTURES
   //============================== 

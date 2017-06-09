@@ -81,13 +81,13 @@ char npartfile[32];
                     
 calcu_t  calcu;
 
-int *idxm;
-double **der,***ode,**sh,**jac,**ijac,**coor,*wp;
+int      *idxm;
+double   **der,***ode,**sh,**jac,**ijac,**coor,*wp;
 
-int egn, pgn;
-double **phi;
-double power;
-double vol;
+int      egn, pgn;
+double   **phi;
+double   power;
+double   vol;
 
 /* Precursors constants */
 double *veloc,*lambda,*beta,*chi,beta_tot;      
