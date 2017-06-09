@@ -1,5 +1,6 @@
 \chapter*{Fermi Input Manual}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \definecolor{mygreen}{rgb}{0.3, 0.9, 0.1}
@@ -21,6 +22,8 @@
 \textcolor{Red}{$end_mesh} 
 \end{Verbatim}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Energy groups information}
 
 \begin{Verbatim}[frame=single,commandchars=\\\{\}]
@@ -31,6 +34,9 @@
     
 \textcolor{Red}{$end_energy_groups}
 \end{Verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Calculation mode}
 
@@ -44,6 +50,8 @@
 \textcolor{Red}{$end_mode}
 \end{Verbatim}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Nuclear data information}
 
 \begin{Verbatim}[frame=single,commandchars=\\\{\}]
@@ -55,8 +63,6 @@
 \end{Verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Nuclear data}
 
 \subsection{Macroscopic cross sections}
 
@@ -111,6 +117,8 @@ Where \verb <chi> is the fission spectrum given as:
 <chi> = < \( \chi_{1} \) \(\chi_{2}\dots\chi_{g}\) > 
 \end{alltt}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Fission precursors' constants}
 
 \begin{Verbatim}[frame=single,commandchars=\\\{\}]
@@ -141,3 +149,72 @@ Where \verb <chi>  are the precursors' neutron energy spectrum given as:
 \begin{alltt}
 <chi> = < \(\chi_{11} \chi_{21} \dots \chi_{G1} \chi_{12} \dots \chi_{Gg}\) > 
 \end{alltt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Outputs}
+
+
+Is it possible to print variables on ASCII files in order to obtain results from the code
+directly. There are other forms of obtaining results form the code that is coupling it with
+other codes and to perform coupling calculations. We recommend this last one but the output
+mode is here to provide the user with quick results without spending to much time on code 
+coupling.
+
+\begin{Verbatim}[frame=single,commandchars=\\\{\}]
+   \textcolor{Red}{$Output}
+       \textcolor{OliveGreen}{kind <kind>}
+       \textcolor{OliveGreen}{<arguments>}
+   \textcolor{Red}{$EndOutput}
+       \textcolor{OliveGreen}{file <file>}
+       \textcolor{OliveGreen}{nphy <N>}
+       \textcolor{OliveGreen}{<physical\_1>  <physical\_2> \dots <physical\_N>}
+\end{Verbatim}
+
+Where \textalltt{\textcolor{OliveGreen}{<kind>}} is an integer number code that represents 
+the kind of output that is going to be print. The values of 
+\textalltt{\textcolor{OliveGreen}{<arguments>}} depends on the last value.Possible values 
+are:
+
+\begin{itemize}
+   \item 1: do nothing
+   \item 2: prints powers on physical entities on ASCII file in each time step.
+\begin{Verbatim}[frame=single,commandchars=\\\{\}]
+       \textcolor{OliveGreen}{file <file>}
+       \textcolor{OliveGreen}{nphy <N>}
+       \textcolor{OliveGreen}{<physical\_1>  <physical\_2> \dots <physical\_N>}
+\end{Verbatim}
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Communication}
+
+It is possible to establish communication with other codes in order to perform couple 
+calculations. This is one of the most important properties of \fermi code. The communication
+is performs thanks to the \verb PLEPP  library.
+
+\begin{Verbatim}[frame=single,commandchars=\\\{\}]
+   \textcolor{Red}{$Communication}
+       \textcolor{OliveGreen}{kind <kind>}
+       \textcolor{OliveGreen}{<arguments>}
+   \textcolor{Red}{$EndCommunication}
+\end{Verbatim}
+
+Where \textalltt{\textcolor{OliveGreen}{<kind>}} is an integer number code that represents 
+the kind of communication that is going to be done. The values of 
+\textalltt{\textcolor{OliveGreen}{<arguments>}} depends on the 
+\textalltt{\textcolor{OliveGreen}{<kind>}} value.Possible values 
+are:
+
+\begin{itemize}
+   \item 1: communication with one code where the cross sections are passed at each time 
+   step and \fermi returns the power corresponding to that evolution.
+\begin{Verbatim}[frame=single,commandchars=\\\{\}]
+       \textcolor{OliveGreen}{friend <friend>}
+       \textcolor{OliveGreen}{nphy <N>}
+       \textcolor{OliveGreen}{<physical\_1>  <physical\_2> \dots <physical\_N>}
+\end{Verbatim}
+\end{itemize}
+
