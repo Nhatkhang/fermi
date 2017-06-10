@@ -40,10 +40,11 @@ OBJ  = ${OBJ_DIR}/fer_main.o           \
        ${OBJ_DIR}/fer_solv.o           \
        ${OBJ_DIR}/fer_power.o          \
        ${OBJ_DIR}/fer_rods.o           \
-       ${OBJ_DIR}/lst2msh.o            \
-       ${OBJ_DIR}/utils.o              \
        ${OBJ_DIR}/fer_output.o         \
-       ${OBJ_DIR}/fer_parser.o             
+       ${OBJ_DIR}/fer_couple.o         \
+       ${OBJ_DIR}/fer_parser.o         \
+       ${OBJ_DIR}/lst2msh.o            \
+       ${OBJ_DIR}/utils.o
 
 .PHONY: clean_
 

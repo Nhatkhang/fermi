@@ -1,126 +1,116 @@
 /* 
 
-Communications routines for Fermi throught MPI 
+Communications routines for FERMI using PLEPP library
 
 Authors: 
 Federico Caccia  (fedecaccia32@gmail.com)
 Guido Giuntoli   (guido.giuntoli@bsc.es)
 
--> In this implementation Fermi can be connected with only one code
+-> FERMI can be connected to an "indefinite" number of process.
 
 */
 
 #include <mpi.h>
 #include "fermi.h"
 
-#define  NTRIES_MAX 5
 
-int fer_couple(int order, MPI_Comm * couple_comm, char * server_n)
+int fer_comm_step(int order)
 {
 
-    // Four simple and different orders available
-    switch(order){
+  node_list_t *pn;
+  comm_t      *comm;
+  int         count;
+  int         tag;
+  MPI_Status  status;
+
+  // We travel all the communications in list_comm
+  // and perform the communication with all of them
+  while(pn)
+  {
+
+    // First and input order is received,
+    // these order should be syncronize with
+    // the execution of external codes
+
+    comm = (comm_t*)pn->data;
+
+    switch(comm->kind){
+
+      case 1:
+
+	if(order == COUPLE_RECV){
+
+	  count = egn * nxs_mat;
+
+	// we receive cross sections
+	MPI_recv(
+	    comm.comm_1.xs, 
+	    count, 
+	    MPI_DOUBLE,
+	    comm.comm_1.rem_leader,
+	    tag,
+	    comm.comm_1.intercomm,
+	    &status;
+	    );
+	}
+	else if(order == COUPLE_SEND){
+
+	}
+
+	break;
+
+      default:
+	return 1;
+    }
+  
+    pn = pn->next;
+
+  }
+
          
-	 /****************************************************************************************************/
-	 case COUPLE_INIT:
+  /**************************************************/
 
-             fer_coinit( couple_comm , server_n );
-	     break;
-
-	 /****************************************************************************************************/
-	 case COUPLE_RECV:
-
-             fer_corecv( couple_comm );
-	     break;
-	 
-	 /****************************************************************************************************/
-	 case COUPLE_SEND:
-
-             fer_cosend( couple_comm );
-	     break;
-
-	 /****************************************************************************************************/
-	 case COUPLE_ENDS:
-
-             fer_coends( couple_comm );
-	     break;
-
-	 /****************************************************************************************************/
-    }
-
-    return 0;
+  return 0;
 }
 
-/****************************************************************************************************/
 
-int fer_coinit(MPI_Comm * couple_comm, char * server_n)
+/**************************************************/
+
+int fer_comm_init(MPI_Comm *world_comm, 
+    MPI_Comm *FERMI_Comm, 
+    MPI_Comm *INTER_Comm)
 {
-    // Stablish connection with server
 
-    int  ntry, ierr;
-    char port_n[MPI_MAX_PORT_NAME];
+  /*
+     We initialize the local communicator FERMI_Comm and 
+     the inter-communicator array INTER_Comm[]
 
-    // server_n is the string corresponding to the port we want to communicate
-    // this name comes from input
-    PetscPrintf(world," Stablishing MPI connection with %s:\n", server_n);
+  */
 
-    // we look to the port name we want to communicate with
-    ntry = 0;
-    while(ntry < NTRIES_MAX){
-	ierr = MPI_Lookup_name (server_n, MPI_INFO_NULL, port_n);
-	if (ierr == 0){
-	    PetscPrintf(world,"ntry:%d -> Can't find service, trying again\n", ntry);
-	}
-	ntry++;
-    }
-    if(ierr == 0){
-	PetscPrintf(world,"Service found at port: %s after %d tries.\n", port_n, ntry);
-	ntry = 0;
-    }
-    else{
-	PetscPrintf(world,"fer_coinit: problem searching port name\n");
-	return 1;
-    }
+  #ifdef COMMDOM 
 
-    // connecting server's port 
-    // doubt : MPI_COMM_SELF ?
-    while(ntry < 5){
-	PetscPrintf(world,"Connecting...\n");
-	ierr = MPI_Comm_connect(port_n, MPI_INFO_NULL, 0, MPI_COMM_SELF, couple_comm);
-	if(ierr == 0){
-	    PetscPrintf(world,"Can't connect to service, re-trying.\n");
-	}
-	ntry = ntry + 1;
-    }
-    if (ierr != 0){
-	PetscPrintf(world,"fer_coinit: problem connecting to port.\n");
-	return 1;
-    }
-    PetscPrintf(world,"Connected:0K\n");
+      int   i;
+      int   ierr;
+      char  my_name[] = "fermi"; // name for PLEPP coupling scheme
 
+      commdom_create();
+      commdom_set_names(coupling.world, my_name);
+      commdom_create_commij(world_comm, FERMI_Comm);
 
-//    PetscPrintf(world,"Receiving general parameters.\n");
-//
-//    int tag = 100;
-//    int status;
-//  
-//    ierr = MPI_Recv (&\textcolor{OliveGreen}{t_0}, 1, MPI_DOUBLE_PRECISION, 0, tag, Comp_Comm, &status);
-//    ierr = MPI_Recv (&\textcolor{OliveGreen}{N_t}, 1, MPI_INTEGER, 0, tag, Comp_Comm, &status);
-//    ierr = MPI_Recv (&\textcolor{OliveGreen}{N_input_var}, 1, MPI_INTEGER, 0, tag, Comp_Comm, &status);
-//    ierr = MPI_Recv (&\textcolor{OliveGreen}{N_output_var}, 1, MPI_INTEGER, 0, tag, Comp_Comm, &status);
+      // We travel all the friend of FERMI 
+      // in order to get the inter-communicators
+      // created by commdom_create_commij
+      for(i=0; i < coupling.num_friends; i++){
+	commdom_get_commij(coupling.friends[i],&INTER_Comm[i]);
+      }
 
-//    Check consistency in data
-//
-//    \textcolor{Gray}{Receiving control instruction:}
-//    \textcolor{Gray}{0: restart step / 1: continue / 2: abort}
-//
-//
-//    ierr = MPI_Recv (&\textcolor{OliveGreen}{order}, 1, MPI_DOUBLE_PRECISION, 0, tag, Comp_Comm, &status)
+  #endif
 
-    return 0;
+  return 0;
+
 }
 
-/****************************************************************************************************/
+/**************************************************/
 
 int fer_corecv(MPI_Comm * couple_comm)
 {
@@ -133,7 +123,7 @@ int fer_corecv(MPI_Comm * couple_comm)
     return 0;
 } 
 
-/****************************************************************************************************/
+/**************************************************/
 
 int fer_cosend(MPI_Comm * couple_comm, int * control_fg)
 {

@@ -120,6 +120,8 @@ typedef struct _comm_1_t{
   int       out_signal;
   double   *pow;
 
+  MPI_Comm *intercomm;
+
 }comm_1_t;
 
 typedef struct _comm_t{

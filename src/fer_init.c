@@ -65,7 +65,7 @@ int ferinit(int argc,char **argv)
       }
       INTER_Comm = malloc(coupling.num_friends * sizeof(MPI_Comm));
 
-      ierr = init_coupling( &WORLD_Comm, &FERMI_Comm, INTER_Comm);
+      ierr = fer_comm_init( &WORLD_Comm, &FERMI_Comm, INTER_Comm);
     #else
       // coupling NO WAY !
       PetscPrintf(FERMI_Comm,"fer_init.c: you have to link with "
@@ -112,7 +112,7 @@ int ferinit(int argc,char **argv)
     return 1;
   }
   //
-  //================================================================================ 
+  //============================== 
 
 
   //============================== 
@@ -141,9 +141,10 @@ int ferinit(int argc,char **argv)
   //
   //============================== 
 
-  //================================================================================ 
+
+  //============================== 
   // OUTPUT INITIALIZATION
-  //================================================================================ 
+  //============================== 
   //    
   //  Here we open some file if the kind requiere them
   //
@@ -330,37 +331,4 @@ int ferinit(int argc,char **argv)
     return 1;
   }
   return 0;
-}
-
-
-
-int init_coupling(MPI_Comm * world_comm, MPI_Comm * FERMI_Comm, MPI_Comm * INTER_Comm)
-{
-
-  /*
-     We initialize the local communicator FERMI_Comm and 
-     the inter-communicator array INTER_Comm[]
-
-  */
-
-#ifdef COMMDOM 
-
-  int   i;
-  int   ierr;
-  char  my_name[] = "fermi"; // name for PLEPP coupling scheme
-
-  commdom_create();
-  commdom_set_names(coupling.world, my_name);
-  commdom_create_commij(world_comm, FERMI_Comm);
-
-  // We travel all the friend of FERMI in order to get the inter-communicators
-  // created by commdom_create_commij
-  for(i=0; i < coupling.num_friends; i++){
-    commdom_get_commij(coupling.friends[i],&INTER_Comm[i]);
-  }
-
-#endif
-
-  return 0;
-
 }
