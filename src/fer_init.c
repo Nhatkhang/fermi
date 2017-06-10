@@ -53,27 +53,26 @@ int ferinit(int argc,char **argv)
   //================================================== 
   //
   WORLD_Comm = MPI_COMM_WORLD;
+  FERMI_Comm = WORLD_Comm;
 
   if( couple_fl == true ){
     // FERMI is going to be coupled with another code
-#ifdef COMMDOM 
-    // so fills the "coupling" structure
-    ierr = parse_coupling(file_c);
-    if(ierr != 0){
+    #ifdef COMMDOM 
+      // so fills the "coupling" structure
+      ierr = parse_coupling(file_c);
+      if(ierr != 0){
+        return 1;
+      }
+      INTER_Comm = malloc(coupling.num_friends * sizeof(MPI_Comm));
+
+      ierr = init_coupling( &WORLD_Comm, &FERMI_Comm, INTER_Comm);
+    #else
+      // coupling NO WAY !
+      PetscPrintf(FERMI_Comm,"fer_init.c: you have to link with "
+	  "PLEPP for perming a coupled calculation.\n\n"); 
       return 1;
-    }
-    INTER_Comm = malloc(coupling.num_friends * sizeof(MPI_Comm));
+    #endif
 
-    ierr = init_coupling( &WORLD_Comm, &FERMI_Comm, INTER_Comm);
-#else
-    // coupling NO WAY !
-    // FERMI is the whole world
-    FERMI_Comm = WORLD_Comm;
-#endif
-
-  }
-  else{
-    FERMI_Comm = WORLD_Comm;
   }
 
   PETSC_COMM_WORLD = FERMI_Comm;
@@ -82,11 +81,13 @@ int ferinit(int argc,char **argv)
   nproc = local_size;
   rank  = local_rank;
 
+  // PETSC_COMM_WORLD has been set so it is possible to call
+  // SlepcInitialize  or PetscInitialize (internally)
   SlepcInitialize(&argc,&argv,(char*)0,NULL);
 
   calcu.exec = (nproc>1)?PARALLEL:SEQUENCIAL;
   if(argc == 1){
-    PetscPrintf(FERMI_Comm,"main.c:input file NS.\n\n"); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:input file NS.\n\n"); 
     return 1;
   }
   //
@@ -107,7 +108,7 @@ int ferinit(int argc,char **argv)
   ierr=parse_input();
   if(ierr!=0)
   {
-    PetscPrintf(FERMI_Comm,"main.c:ierr parsing input file.\n");
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr parsing input file.\n");
     return 1;
   }
   //
@@ -127,7 +128,7 @@ int ferinit(int argc,char **argv)
   ierr=gmsh_read(meshfile,epartfile,npartfile,rank,DIM,&list_nodes,&list_ghost,&list_elemv,&list_elems,&list_physe,&loc2gold,&loc2gnew,&npp,nproc);    
   if(ierr!=0)
   {
-    PetscPrintf(FERMI_Comm,"main.c:ierr reading mesh.\n"); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr reading mesh.\n"); 
     return 1;
   }
   ntot=0;
@@ -193,7 +194,7 @@ int ferinit(int argc,char **argv)
   PetscPrintf(FERMI_Comm,"Printing structures 1.\n");
   ierr = print_struct(1);   
   if(ierr!=0){
-    PetscPrintf(FERMI_Comm,"main.c:ierr printing structures.\n"); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr printing structures.\n"); 
     return 1;
   }
   //
@@ -208,13 +209,13 @@ int ferinit(int argc,char **argv)
   ierr=mesh_alloc(&list_nodes, &list_ghost, cpynode, &list_elemv, cpyelemv, &list_elems, cpyelems, &mesh);
   if(ierr) 
   {
-    PetscPrintf(FERMI_Comm,"main.c:ierr allocating mesh.\n"); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr allocating mesh.\n"); 
     return 1;
   }
   ierr=mesh_renum(&mesh,loc2gold,loc2gnew);
   if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:ierr renumbering mesh nodes.\n"); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr renumbering mesh nodes.\n"); 
     return 1;
   }
   //
@@ -229,7 +230,7 @@ int ferinit(int argc,char **argv)
   ierr=ferirods();
   if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:ierr control rods initialization.\n",ierr); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr control rods initialization.\n",ierr); 
     return 1;
   }
   //      
@@ -241,7 +242,7 @@ int ferinit(int argc,char **argv)
   ierr=ferbouset();
   if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:ierr assembling BCs.\n"); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr assembling BCs.\n"); 
     return 1;
   }
   //
@@ -289,7 +290,7 @@ int ferinit(int argc,char **argv)
   fem_inigau();
   if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:ierr gps init.\n\n"); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr gps init.\n\n"); 
     return 1;
   }
 
@@ -325,7 +326,7 @@ int ferinit(int argc,char **argv)
   ierr = print_struct(2);   
   if(ierr)
   {
-    PetscPrintf(FERMI_Comm,"main.c:ierr printing structures.\n"); 
+    PetscPrintf(FERMI_Comm,"fer_init.c:ierr printing structures.\n"); 
     return 1;
   }
   return 0;
