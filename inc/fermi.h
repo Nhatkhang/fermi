@@ -20,6 +20,10 @@
 #include "fun.h"
 #include "utils.h"
 
+#ifdef COMMDOM
+  #include "commdom_wrapper.h"
+#endif
+
 /*
 
    Constants definition
@@ -100,7 +104,6 @@ int fer_corecv(MPI_Comm * couple_comm);
 int fer_cosend(MPI_Comm * couple_comm, int * control_fg);
 int fer_coends(MPI_Comm * couple_comm);
 
-#include "commdom_wrapper.h"
 int init_coupling(MPI_Comm * world_comm, MPI_Comm * FERMI_Comm, MPI_Comm * INTER_Comm);
 
 

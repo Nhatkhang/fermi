@@ -48,15 +48,21 @@ OBJ  = ${OBJ_DIR}/fer_main.o           \
 .PHONY: clean_
 
 PLEPP=0
+
 ifneq ($(PLEPP), 0)
- ROOT     = $(shell pwd)
- LIBPLEPP = $(ROOT)/lib/PLEPP/LIBPLEPP
- LIBPLE   = $(ROOT)/lib/PLEPP/LIBPLE
- CFLAGS  += -DCOMMDOM=$(COMMDOM)
- CFLAGS  += -I$(LIBPLEPP)/Include
- CFLAGS  += -I$(LIBPLEPP)/Wrappers/CC
- LIBS     = $(LIBPLEPP)/Wrappers/CC/libcommdom.a 
- LIBS    += $(LIBPLE)/Execs/lib/libple.a 
+
+  ROOT      = $(shell pwd)
+
+  LIBPLEPP  = $(ROOT)/lib/PLEPP/LIBPLEPP
+  LIBPLE    = $(ROOT)/lib/PLEPP/LIBPLE
+
+  CFLAGS   += -DCOMMDOM=$(COMMDOM)
+  CFLAGS   += -I$(LIBPLEPP)/Include
+  CFLAGS   += -I$(LIBPLEPP)/Wrappers/CC
+
+  LIBS      = $(LIBPLEPP)/Wrappers/CC/libcommdom.a 
+  LIBS     += $(LIBPLE)/Execs/lib/libple.a 
+
 endif
 
 all: ${OBJ} 
