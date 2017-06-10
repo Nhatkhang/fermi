@@ -43,7 +43,7 @@ int parse_func(void);
 int parse_boun(void);
 int parse_crod(void);
 int parse_outp(void);
-int parse_comm(void);
+int parse_communication(void);
 int parse_material(char *buff, pvl_t *mat);
 int cmp_mat(void *a, void *b);
 int parse_boundary(char *bufcpy, bound_t *bou);

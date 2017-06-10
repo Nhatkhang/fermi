@@ -29,7 +29,7 @@ int parse_input(void){
   if(parse_boun())return 5; 
   if(parse_crod())return 6; 
   if(parse_outp())return 7; 
-  if(parse_comm())return 7; 
+  if(parse_communication())return 8; 
   return 0;
 }
 
@@ -827,7 +827,7 @@ int parse_outp(void)
 
 /*****************************************************************************************************/
 
-int parse_comm(void)
+int parse_communication(void)
 {
 
   /*
@@ -841,19 +841,19 @@ int parse_comm(void)
      Notes:
 
      -> $Communication could be repeated various time on input 
-     file with different arguments (and the same on a wrong 
-     implementation)
+     file with different arguments (and maybe the same probably as 
+     an error)
 
    */
 
-  FILE      *file= fopen(inputfile,"r");
+  FILE      *file = fopen(inputfile,"r");
   char      *data,buf[NBUF], buf_a[NBUF];
-  int       fl, ln, i;
+  int       fl=0, ln=0, i;
   comm_t    comm;
 
-  ln = 0;
-  fl = 0;
-  while(fgets(buf,NBUF,file)){
+  while(fgets(buf,NBUF,file))
+  {
+
     ln++;
     strcpy(buf_a, buf);
     data=strtok(buf_a," \n");
@@ -864,84 +864,77 @@ int parse_comm(void)
 	fl=1;
       }
       else if(!strcmp(data,"$EndCommunication")){
-	  list_insertlast(&list_comms,(void*)&comm);
-	}
+	list_insertlast(&list_comms,(void*)&comm);
 	fl = 0;
       }
+    }
 
-      if(fl==2 && data[0]!='#'){
+    if(fl==2 && data[0]!='#'){
 
-	// we are in the line after $Output
-	if( get_int(buf,"kind",&comm.kind)) 
-	  return 1;  
+      // we are in the line after $Communication
+      if( get_int(buf,"kind",&comm.kind)) 
+	return 1;  
 
-	switch(comm.kind){
+      switch(comm.kind){
 
-	  case 1:
-	    break;
+	case 1:
 
-	  case 2:
+	  /*
+	     kind     1
+	     friend   <friend_name>
+	     nphy     <num_of_phys>
+	     <phys_1> <phys_2>      ... <phys_n>
 
-	    /*
-	       kind     2
-	       friend   <friend_name>
-	       nphy     <num_of_phys>
-	       <phys_1> <phys_2>      ... <phys_n>
+	     -> friend is the program to communicate information
+	     -> xs    on different physical are going to be recv
+	     -> power on different physical are going to be send
 
-               -> friend is the program to communicate information
-	       -> xs    on different physical are going to be recv
-	       -> power on different physical are going to be send
+	   */
 
-	     */
+          // Search for its friend's name
+	  if(!fgets(buf,NBUF,file)) 
+	    return 1;
+	  ln ++;
+	  if( get_char(buf,"friend",comm.comm_1.friend_name)) 
+	    return 1;
 
-	    if(!fgets(buf,NBUF,file)) 
-	      return 1;
-	    ln ++;
+	  if(!fgets(buf,NBUF,file)) 
+	    return 1;
+	  ln ++;
+	  if( get_int(buf,"nphy",&comm.comm_1.nphy)) 
+	    return 1;  
 
-	    if( get_char(buf,"file",comm.comm_1.friend_name)) 
-	      return 1;
+	  comm.comm_1.phys = malloc(comm.comm_1.nphy*sizeof(char**));
+	  comm.comm_1.ids  = malloc(comm.comm_1.nphy*sizeof(int*));
+	  comm.comm_1.pow  = malloc(comm.comm_1.nphy*sizeof(double*));
+	  comm.comm_1.xs   = malloc(comm.comm_1.nphy * \
+	      nxs_mat *sizeof(double*));
 
-	    if(!fgets(buf,NBUF,file)) 
-	      return 1;
-	    ln ++;
+	  if(!fgets(buf,NBUF,file)) 
+	    return 1;
+	  ln ++;
 
-	    if( get_int(buf,"nphy",&comm.comm_1.nphy)) 
-	      return 1;  
-	      		
-	    comm.comm_1.phys = malloc(comm.comm_1.nphy*sizeof(char*));
-	    comm.comm_1.ids  = malloc(comm.comm_1.nphy*sizeof(int*));
-	    comm.comm_1.pow  = malloc(comm.comm_1.nphy*sizeof(double*));
-	    comm.comm_1.xs   = malloc(comm.comm_1.nphy * nxs_mat *sizeof(double*));
+	  // now we read the physical entities names
+	  data = strtok(buf," \n");
+	  i = 0;
+	  while(i < comm.comm_1.nphy && data != NULL){
+	    comm.comm_1.phys[i] = strdup(data);
+	    data = strtok(NULL," \n");
+	    i++;
+	  }
+	  if( i != comm.comm_1.nphy ){
+	    return 1;
+	  }
 
-	    for(i = 0; i < comm.comm_1.nphy; i++){
-	      comm.comm_1.phys[i] = (char *)malloc(16*sizeof(char));
-	    }
+	  break;
 
-	    if(!fgets(buf,NBUF,file)) 
-	      return 1;
-	    ln ++;
-
-	    // now we read the physical entities names
-	    data = strtok(buf," \n");
-	    i = 0;
-	    while(i < comm.comm_1.nphy && data != NULL){
-	      strcpy( comm.comm_1.phys[i],data);
-	      data = strtok(NULL," \n");
-	      i++;
-	    }
-	    if( i != comm.comm_1.nphy ){
-	      return 1;
-	    }
-
-	    break;
-
-	  default:
-	    break;
-	}
-
+	default:
+	  break;
       }
-      if(fl==1)
-	fl=2;
+
+    }
+    if(fl==1)
+      fl=2;
   }
   fclose(file);
   return 0;

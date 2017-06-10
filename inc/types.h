@@ -109,7 +109,7 @@ typedef struct _comm_1_t{
 
   char     friend_name[64];
   int      nphy;
-  char     **phys;         // array of Physical Entities names
+  char     **phys;          // array of Physical Entities names
   int      *ids ;
 
   /* recv */
