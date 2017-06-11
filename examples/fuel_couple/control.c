@@ -73,6 +73,7 @@ int main(int argc,char **argv)
   // array to determine the global rank using Allgather 
   int * share;
   int value;
+  int remote_rank;
 
   share = (int*)malloc(inter_size * sizeof(int));
 
@@ -81,6 +82,12 @@ int main(int argc,char **argv)
 
   if(ierr){
     return 1;
+  }
+
+  for(i=0;i<inter_size;i++){
+    if(share[i]==fermiID){
+      remote_rank = i;
+    }
   }
 
 

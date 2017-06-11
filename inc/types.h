@@ -176,6 +176,11 @@ typedef struct _coupling_t{
   int      myID;
   int    * IDs;
   int      num_friends;
+
+  MPI_Comm * INTER_Comm;   // array of inter-communicators to communicate
+  // with other codes
+  int      * remote_ranks; // remotes ranks in INTER_Comm to communicate
+                         // with the others
     
 }coupling_t;
 

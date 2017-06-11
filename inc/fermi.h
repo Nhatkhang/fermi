@@ -104,9 +104,7 @@ int fer_corecv(MPI_Comm * couple_comm);
 int fer_cosend(MPI_Comm * couple_comm, int * control_fg);
 int fer_coends(MPI_Comm * couple_comm);
 
-int fer_comm_init(MPI_Comm *world_comm, 
-    MPI_Comm *FERMI_Comm, 
-    MPI_Comm *INTER_Comm);
+int fer_comm_init(void);
 int fer_comm_step(int order);
 
 #endif

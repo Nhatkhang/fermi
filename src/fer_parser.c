@@ -899,8 +899,8 @@ int parse_communication(void)
 	  // acording to the friend name
 	  for( i=0 ; i<coupling.num_friends ; i++){
 	    if(strcmp(coupling.friends[i],comm.comm_1.friend_name)==0){
-	      comm.comm_1.intercomm   = &INTER_Comm[i];
-	      comm.comm_1.remote_rank = remote_ranks[i];
+	      comm.comm_1.intercomm   = &coupling.INTER_Comm[i];
+	      comm.comm_1.remote_rank = coupling.remote_ranks[i];
 	    }
 	  }
 

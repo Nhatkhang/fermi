@@ -154,9 +154,7 @@ int fer_comm_step(int order)
 
 /**************************************************/
 
-int fer_comm_init(MPI_Comm *world_comm, 
-    MPI_Comm *FERMI_Comm, 
-    MPI_Comm *INTER_Comm)
+int fer_comm_init(void)
 {
 
   /*
@@ -167,36 +165,44 @@ int fer_comm_init(MPI_Comm *world_comm,
 
   #ifdef COMMDOM 
 
-      int   i;
+      int   i, j;
       int   ierr;
       char  my_name[] = "fermi"; // name for PLEPP coupling scheme
       int  *share, inter_size, inter_rank,value;
 
       commdom_create();
       commdom_set_names(coupling.world, my_name);
-      commdom_create_commij(world_comm, FERMI_Comm);
+      commdom_create_commij(&WORLD_Comm, &FERMI_Comm);
 
       // We travel all the friend of FERMI 
       // in order to get the inter-communicators
       // created by commdom_create_commij
       for(i=0; i < coupling.num_friends; i++){
-	commdom_get_commij(coupling.friends[i],&INTER_Comm[i]);
+	commdom_get_commij(coupling.friends[i],&coupling.INTER_Comm[i]);
       }
 
       // we determine the remotes ranks in order to stablish the communication 
       // with the others, all the other process in INTER_Comm should do the 
       // same
-      remote_ranks = malloc(coupling.num_friends * sizeof(int));
+      coupling.remote_ranks = malloc(coupling.num_friends * sizeof(int));
       for(i=0; i < coupling.num_friends; i++){
-	MPI_Comm_rank(INTER_Comm[i],&inter_rank);
-	MPI_Comm_size(INTER_Comm[i],&inter_size);
+	MPI_Comm_rank(coupling.INTER_Comm[i],&inter_rank);
+	MPI_Comm_size(coupling.INTER_Comm[i],&inter_size);
 	share = malloc(inter_size * sizeof(int));
 	value = (local_rank==0) ? coupling.myID : 0;
 
-	ierr = MPI_Allgather(&value,1,MPI_INT,share,1,MPI_INT,INTER_Comm[i]);
+	ierr = MPI_Allgather(&value,1,MPI_INT,share,1,MPI_INT,coupling.INTER_Comm[i]);
 
 	if(ierr){
 	  return 1;
+	}
+
+	for(i=0;i<coupling.num_friends;i++){
+	  for(j=0;j<inter_size;j++){
+	    if(share[j]==coupling.IDs[i]){
+	      coupling.remote_ranks[i] = j;
+	    }
+	  }
 	}
 
         free(share);

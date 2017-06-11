@@ -63,9 +63,9 @@ int ferinit(int argc,char **argv)
       if(ierr != 0){
         return 1;
       }
-      INTER_Comm = malloc(coupling.num_friends * sizeof(MPI_Comm));
+      coupling.INTER_Comm = malloc(coupling.num_friends * sizeof(MPI_Comm));
 
-      ierr = fer_comm_init( &WORLD_Comm, &FERMI_Comm, INTER_Comm);
+      ierr = fer_comm_init();
     #else
       // coupling NO WAY !
       PetscPrintf(FERMI_Comm,"fer_init.c: you have to link with "

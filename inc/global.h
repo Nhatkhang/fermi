@@ -17,20 +17,16 @@
 #define DIM 3
 #define NPE 8
 
-MPI_Comm   WORLD_Comm; // global communicator
-MPI_Comm   FERMI_Comm; // local  communicator
-MPI_Comm * INTER_Comm; // array of inter-communicators to communicate
-                       // with other codes
-int      * remote_ranks; // remotes ranks in INTER_Comm to communicate
-                         // with the others
+MPI_Comm   WORLD_Comm;   // global communicator
+MPI_Comm   FERMI_Comm;   // local  communicator
 
-int       globa_rank; // rank in WORLD_Comm
-int       globa_size; // size in WORLD_Comm
-int       local_rank; // rank in FERMI_Comm
-int       local_size; // size in FERMI_Comm
+int       globa_rank;    // rank in WORLD_Comm
+int       globa_size;    // size in WORLD_Comm
+int       local_rank;    // rank in FERMI_Comm
+int       local_size;    // size in FERMI_Comm
 
-enum {QS, TR};        /*Quasi Static, transient*/
-enum {K1};            /*Calculation of elemental matrix by this K modes*/
+enum {QS, TR};           //Quasi Static, transient
+enum {K1};               //Calculation of elemental matrix by this K modes
 
 bool       couple_fl;
 coupling_t coupling;
