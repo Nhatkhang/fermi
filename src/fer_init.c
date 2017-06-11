@@ -98,11 +98,12 @@ int ferinit(int argc,char **argv)
   // PARCING INPUT FILE
   //============================== 
   //    
-  list_init(&list_mater, sizeof(pvl_t),cmp_mat);
-  list_init(&list_bound, sizeof(bound_t),cmp_bou);
-  list_init(&list_fun1d, sizeof(bound_t),cmp_f1d);
+  list_init(&list_mater, sizeof(pvl_t),    cmp_mat);
+  list_init(&list_bound, sizeof(bound_t),  cmp_bou);
+  list_init(&list_fun1d, sizeof(bound_t),  cmp_f1d);
   list_init(&list_ctrlr, sizeof(ctrlrod_t),NULL);
-  list_init(&list_outpu, sizeof(output_t),NULL);
+  list_init(&list_outpu, sizeof(output_t), NULL);
+  list_init(&list_comms, sizeof(comm_t),   NULL);
   strcpy(inputfile,argv[1]);
   PetscPrintf(FERMI_Comm,"Parcing input file.\n");
   ierr=parse_input();
