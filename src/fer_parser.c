@@ -836,9 +836,9 @@ int parse_communication(void)
 
      Notes:
 
-     -> $Communication could be repeated various time on input 
-     file with different arguments (and maybe the same probably as 
-     an error)
+     -> $Communication could be repeated various times on input 
+     file with different arguments (and maybe the same, probably
+     is an error)
 
    */
 
@@ -887,12 +887,22 @@ int parse_communication(void)
 
 	   */
 
-          // Search for its friend's name
+          // Search for its friend's name 
+	  // there is only one for this case
 	  if(!fgets(buf,NBUF,file)) 
 	    return 1;
 	  ln ++;
 	  if( get_char(buf,"friend",comm.comm_1.friend_name)) 
 	    return 1;
+
+          // we search for the intercommunicator
+	  // acording to the friend name
+	  for( i=0 ; i<coupling.num_friends ; i++){
+	    if(strcmp(coupling.friends[i],comm.comm_1.friend_name)==0){
+	      comm.comm_1.intercomm   = &INTER_Comm[i];
+	      comm.comm_1.remote_rank = remote_ranks[i];
+	    }
+	  }
 
 	  if(!fgets(buf,NBUF,file)) 
 	    return 1;
@@ -936,7 +946,7 @@ int parse_communication(void)
   return 0;
 }
 
-/*****************************************************************************************************/
+/***************************************************/
 
 int get_int(char *buf, const char *name,int *a)
 {
@@ -972,7 +982,7 @@ int get_int(char *buf, const char *name,int *a)
   return 0;
 }
 
-/*****************************************************************************************************/
+/***************************************************/
 
 int get_char(char *buf, const char *name,char *a)
 {
@@ -1008,14 +1018,7 @@ int get_char(char *buf, const char *name,char *a)
   return 0;
 }
 
-/*****************************************************************************************************/
-
-int cmp_mat(void *a, void *b){
-
-  return (strcmp(((pvl_t*)a)->name,((pvl_t*)b)->name)==0)?0:-1;
-}
-
-/*****************************************************************************************************/
+/***************************************************/
 
 int parse_coupling(const char file_c[])
 {
@@ -1054,14 +1057,14 @@ int parse_coupling(const char file_c[])
 	    coupling.friends = malloc(coupling.num_friends * sizeof(char*));
 	    for(i=0;i<coupling.num_friends;i++){
 
-	      coupling.friends[i] = malloc(64 * sizeof(char));
-
 	      if(data == NULL){
-		PetscPrintf(FERMI_Comm,"you should give at least %d friend names at line %d in %s.\n",
-		    coupling.num_friends, ln, file_c);
+		PetscPrintf(FERMI_Comm,
+		"you should give at least %d",
+		"friend names at line %d in %s.\n",
+		coupling.num_friends, ln, file_c);
 		return 1;
 	      }
-	      strcpy( coupling.friends[i], data);
+	      coupling.friends[i] = strdup( data );
 	      data=strtok(NULL," \n");
 
 	    }
@@ -1083,7 +1086,7 @@ int parse_coupling(const char file_c[])
   return 0;
 }
 
-/*****************************************************************************************************/
+/***************************************************/
 
 int parse_boundary(char *buff, bound_t *bou)
 {
@@ -1116,7 +1119,7 @@ int parse_boundary(char *buff, bound_t *bou)
   return 0;
 }
 
-/*****************************************************************************************************/
+/***************************************************/
 
 int cmp_bou(void *a, void *b){
 
@@ -1128,6 +1131,15 @@ int cmp_bou(void *a, void *b){
     return -1;
   }
 }
+
+/***************************************************/
+
+int cmp_mat(void *a, void *b){
+
+  return (strcmp(((pvl_t*)a)->name,((pvl_t*)b)->name)==0)?0:-1;
+}
+
+/***************************************************/
 
 
 int cmp_time(void *a, void *b){

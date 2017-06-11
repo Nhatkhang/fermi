@@ -111,7 +111,7 @@ typedef struct _comm_1_t{
   int          nphy;
   char      ** phys;          // array of Physical Entities names
   int        * ids ;
-  int          rem_leader;;
+  int          remote_rank;;
 
   /* recv */
   double     * xs;
