@@ -49,7 +49,6 @@ OBJ  = ${OBJ_DIR}/fer_main.o           \
 .PHONY: clean_
 
 PLEPP=0
-
 ifneq ($(PLEPP), 0)
 
   ROOT      = $(shell pwd)
