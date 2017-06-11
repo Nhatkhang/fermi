@@ -22,12 +22,15 @@ int main(int argc,char **argv)
 
       dtn=((tcontrol_t*)pNod->data)->dt;
 
+      fer_comm_step(COUPLE_RECV);
+
       if(ferstep_ST())
         goto error;
 
       sprintf(nam,"steady_r%d_t%d",rank,step);
       print_vtk(nam);
       print_out(&phi_n, step);
+      fer_comm_step(COUPLE_SEND);
 
       calcu.t=calcu.t + dtn;
       step ++;

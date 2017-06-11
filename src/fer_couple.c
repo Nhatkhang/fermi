@@ -104,6 +104,7 @@ int fer_comm_step(int order)
 
 
 	}
+
 	else if(order == COUPLE_SEND){
 
 	  count = comm->comm_1.nphy;

@@ -157,15 +157,11 @@ int parse_mats(void)
             return 1;
           }
           veloc=(double*)calloc(egn,sizeof(double));
-	  switch(egn){
-	    case 1:
-	      nxs_mat=5;
-	      break;
-	    case 2:
-	      nxs_mat=12;
-	      break;
-	    default:
-	      return 1;
+	  if(egn == 1){
+	    nxs_mat= 5 * egn;
+	  }
+	  else{
+	    nxs_mat= 5 * egn + egn*(egn-1);
 	  }
           com=com|1;
         }else if(!strcmp(data,"pgn"))
