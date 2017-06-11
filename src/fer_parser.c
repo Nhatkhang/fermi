@@ -701,7 +701,7 @@ int parse_material(char *buff, pvl_t *mat){
   return 0;
 }
 
-/*****************************************************************************************************/
+/***************************************************/
 
 int parse_outp(void)
 {
@@ -821,7 +821,7 @@ int parse_outp(void)
   return 0;
 }
 
-/*****************************************************************************************************/
+/***************************************************/
 
 int parse_communication(void)
 {
@@ -1048,6 +1048,8 @@ int parse_coupling(const char file_c[])
 
 	    // read number of friend number
 	    coupling.num_friends = atoi(data);
+	    data=strtok(NULL," \n");
+	    coupling.myID = atoi(data);
 	    fl ++;
 	    break;
 
@@ -1055,6 +1057,7 @@ int parse_coupling(const char file_c[])
 
 	    // read friend names
 	    coupling.friends = malloc(coupling.num_friends * sizeof(char*));
+	    coupling.IDs = malloc(coupling.num_friends * sizeof(int*));
 	    for(i=0;i<coupling.num_friends;i++){
 
 	      if(data == NULL){
@@ -1066,13 +1069,12 @@ int parse_coupling(const char file_c[])
 	      }
 	      coupling.friends[i] = strdup( data );
 	      data=strtok(NULL," \n");
+	      coupling.IDs[i] = atoi(data);
+	      data=strtok(NULL," \n");
 
 	    }
 	    fl ++;
 	    break;
-
-	  case 3:
-	    return 0;
 
 	  default:
 	    return 1;

@@ -172,8 +172,10 @@ typedef struct{
 typedef struct _coupling_t{
 
   char     world[64];
-  int      num_friends;
   char  ** friends;
+  int      myID;
+  int    * IDs;
+  int      num_friends;
     
 }coupling_t;
 

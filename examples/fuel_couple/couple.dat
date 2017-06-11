@@ -6,11 +6,11 @@
 # the same name
 acople
 
-# number of friends in world
-1
+# number of friends in world and myID
+1 1
 
-# friends names
-control
+# friends names and IDs
+control 2
 
 #
 ###################################################

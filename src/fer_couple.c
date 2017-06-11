@@ -47,7 +47,15 @@ int fer_comm_step(int order)
 	  count = egn * nxs_mat * comm->comm_1.nphy;
 
 	  // we receive cross sections
-	  ierr = MPI_Recv( comm->comm_1.xs,  count,  MPI_DOUBLE, comm->comm_1.rem_leader,  tag,  *(comm->comm_1.intercomm), &status );
+	  ierr = MPI_Recv( 
+	      comm->comm_1.xs,  
+	      count,  
+	      MPI_DOUBLE, 
+	      comm->comm_1.remote_rank,  
+	      tag,  
+	      *(comm->comm_1.intercomm), 
+	      &status 
+	      );
 	  if(ierr){
 	    return 1;
 	  }
@@ -113,7 +121,14 @@ int fer_comm_step(int order)
 	  fer_pow_phys( comm->comm_1.nphy, comm->comm_1.ids, comm->comm_1.pow );
 
 	  // we receive cross sections
-	  ierr = MPI_Send( comm->comm_1.pow,  count,  MPI_DOUBLE, comm->comm_1.rem_leader,  tag,  *(comm->comm_1.intercomm));
+	  ierr = MPI_Send( 
+	      comm->comm_1.pow,  
+	      count,  
+	      MPI_DOUBLE, 
+	      comm->comm_1.remote_rank,  
+	      tag,  
+	      *(comm->comm_1.intercomm)
+	      );
 	  if(ierr){
 	    return 1;
 	  }
@@ -155,6 +170,7 @@ int fer_comm_init(MPI_Comm *world_comm,
       int   i;
       int   ierr;
       char  my_name[] = "fermi"; // name for PLEPP coupling scheme
+      int  *share, inter_size, inter_rank,value;
 
       commdom_create();
       commdom_set_names(coupling.world, my_name);
@@ -166,6 +182,26 @@ int fer_comm_init(MPI_Comm *world_comm,
       for(i=0; i < coupling.num_friends; i++){
 	commdom_get_commij(coupling.friends[i],&INTER_Comm[i]);
       }
+
+      // we determine the remotes ranks in order to stablish the communication 
+      // with the others, all the other process in INTER_Comm should do the 
+      // same
+      remote_ranks = malloc(coupling.num_friends * sizeof(int));
+      for(i=0; i < coupling.num_friends; i++){
+	MPI_Comm_rank(INTER_Comm[i],&inter_rank);
+	MPI_Comm_size(INTER_Comm[i],&inter_size);
+	share = malloc(inter_size * sizeof(int));
+	value = (local_rank==0) ? coupling.myID : 0;
+
+	ierr = MPI_Allgather(&value,1,MPI_INT,share,1,MPI_INT,INTER_Comm[i]);
+
+	if(ierr){
+	  return 1;
+	}
+
+        free(share);
+      }
+
 
   #endif
 

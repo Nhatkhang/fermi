@@ -20,7 +20,9 @@
 MPI_Comm   WORLD_Comm; // global communicator
 MPI_Comm   FERMI_Comm; // local  communicator
 MPI_Comm * INTER_Comm; // array of inter-communicators to communicate
-                      // with other codes
+                       // with other codes
+int      * remote_ranks; // remotes ranks in INTER_Comm to communicate
+                         // with the others
 
 int       globa_rank; // rank in WORLD_Comm
 int       globa_size; // size in WORLD_Comm
