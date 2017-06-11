@@ -17,12 +17,14 @@ Guido Giuntoli   (guido.giuntoli@bsc.es)
 int fer_comm_step(int order)
 {
 
-  node_list_t *pn;
-  comm_t      *comm;
-  int         count;
-  int         tag=0;
-  int         ierr;
-  MPI_Status  status;
+  node_list_t * pn, * pm;
+  comm_t      * comm;
+  int           count;
+  int           tag=0;
+  int           ierr;
+  int           i, en;
+  MPI_Status    status;
+  pvl_t       * mat;
 
   // We travel all the communications in list_comm
   // and perform the communication with all of them
@@ -49,6 +51,57 @@ int fer_comm_step(int order)
 	  if(ierr){
 	    return 1;
 	  }
+           
+	  // put cross sections on the list_mater structure
+	  // TODO: the cross section structure should be change
+	  // on the future because is not efficient to localize cross
+	  // sections in a list in this kind of code (arrays are better)
+	  for( i=0 ; i < comm->comm_1.nphy ; i++ ){
+            
+
+	    // localizamos el material en la lista y copiamos
+	    pm = list_mater.head;
+	    while(pm){
+	      mat = (pvl_t*)pm->data;
+
+	      if(strcmp(mat->name, comm->comm_1.phys[i]) == 0){
+		
+		// copiamos D
+		for(en=0 ; en < egn; en++){
+		  mat->D[en]      = comm->comm_1.xs[i * nxs_mat + 0*egn + en];
+		}
+
+		// copiamos xsa
+		for(en=0 ; en < egn; en++){
+		  mat->xs_a[en]   = comm->comm_1.xs[i * nxs_mat + 1*egn + en];
+		}
+
+		// copiamos nxs_f
+		for(en=0 ; en < egn; en++){
+		  mat->nxs_f[en]  = comm->comm_1.xs[i * nxs_mat + 2*egn + en];
+		}
+
+		// copiamos exs_f
+		for(en=0 ; en < egn; en++){
+		  mat->exs_f[en]  = comm->comm_1.xs[i * nxs_mat + 3*egn + en];
+		}
+
+		// copiamos chi
+		for(en=0 ; en < egn; en++){
+		  mat->chi[en]    = comm->comm_1.xs[i * nxs_mat + 4*egn + en];
+		}
+
+		// copiamos xs_s
+		for(en=0 ; en < egn*(egn-1); en++){
+		  mat->xs_s[en]   = comm->comm_1.xs[i * nxs_mat + 5*egn + en];
+		}
+
+	      }
+
+	      pm = pm->next;
+	    }
+	  }
+
 
 	}
 	else if(order == COUPLE_SEND){

@@ -36,35 +36,35 @@ typedef struct _bound_t{
 
 typedef struct _pv_t{
 
-  char   * name;
-  int      gmshid;
+  char     * name;
+  int        gmshid;
 
-  double * D;               // diffusion coeficient
-  double * xs_a;            // absortion XS  
-  double * nxs_f;           // nu x fission XS
-  double * exs_f;           // energy x fission XS
-  double * xs_s;            // scattering XS 
-  double * xs_r;            // remotion XS
-  double * chi;             // fission spectrum
+  double   * D;               // diffusion coeficient
+  double   * xs_a;            // absortion XS  
+  double   * nxs_f;           // nu x fission XS
+  double   * exs_f;           // energy x fission XS
+  double   * xs_s;            // scattering XS 
+  double   * xs_r;            // remotion XS
+  double   * chi;             // fission spectrum
 
-  int      hasprec;
-  double * conc;            // Fission precursors concentration  ( I groups ) 
+  int        hasprec;
+  double   * conc;            // Fission precursors concentration  ( I groups ) 
 
 }pv_t;
 
 typedef struct _pvl_t{
 
-  char name[16];
+  char       name[16];
 
-  double *D;               // diffusion coeficient
-  double *xs_a;            // absortion XS  
-  double *nxs_f;           // nu x fission XS
-  double *exs_f;           // energy x fission XS
-  double *xs_s;            // scattering XS 
-  double *xs_r;            // remotion XS
-  double *chi;             // fission spectrum
+  double   * D;               // diffusion coeficient
+  double   * xs_a;            // absortion XS  
+  double   * nxs_f;           // nu x fission XS
+  double   * exs_f;           // energy x fission XS
+  double   * xs_s;            // scattering XS 
+  double   * xs_r;            // remotion XS
+  double   * chi;             // fission spectrum
 
-  int  hasprec;
+  int        hasprec;
 
 }pvl_t;
 
