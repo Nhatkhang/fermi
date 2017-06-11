@@ -107,20 +107,19 @@ typedef struct _output_t{
 
 typedef struct _comm_1_t{
 
-  char     friend_name[64];
-  int      nphy;
-  char     **phys;          // array of Physical Entities names
-  int      *ids ;
+  char         friend_name[64];
+  int          nphy;
+  char      ** phys;          // array of Physical Entities names
+  int        * ids ;
+  int          rem_leader;;
 
   /* recv */
-  int      inp_signal;
-  double   *xs;
+  double     * xs;
 
   /* send */
-  int       out_signal;
-  double   *pow;
+  double     * pow;
 
-  MPI_Comm *intercomm;
+  MPI_Comm   * intercomm;
 
 }comm_1_t;
 

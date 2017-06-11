@@ -10,7 +10,7 @@ Guido Giuntoli   (guido.giuntoli@bsc.es)
 
 */
 
-#include <mpi.h>
+#include "mpi.h"
 #include "fermi.h"
 
 
@@ -20,11 +20,13 @@ int fer_comm_step(int order)
   node_list_t *pn;
   comm_t      *comm;
   int         count;
-  int         tag;
+  int         tag=0;
+  int         ierr;
   MPI_Status  status;
 
   // We travel all the communications in list_comm
   // and perform the communication with all of them
+  pn = list_comms.head;
   while(pn)
   {
 
@@ -40,20 +42,27 @@ int fer_comm_step(int order)
 
 	if(order == COUPLE_RECV){
 
-	  count = egn * nxs_mat;
+	  count = egn * nxs_mat * comm->comm_1.nphy;
 
-	// we receive cross sections
-	MPI_recv(
-	    comm.comm_1.xs, 
-	    count, 
-	    MPI_DOUBLE,
-	    comm.comm_1.rem_leader,
-	    tag,
-	    comm.comm_1.intercomm,
-	    &status;
-	    );
+	  // we receive cross sections
+	  ierr = MPI_Recv( comm->comm_1.xs,  count,  MPI_DOUBLE, comm->comm_1.rem_leader,  tag,  *(comm->comm_1.intercomm), &status );
+	  if(ierr){
+	    return 1;
+	  }
+
 	}
 	else if(order == COUPLE_SEND){
+
+	  count = comm->comm_1.nphy;
+
+          // calculate powers on each physical entity
+	  fer_pow_phys( comm->comm_1.nphy, comm->comm_1.ids, comm->comm_1.pow );
+
+	  // we receive cross sections
+	  ierr = MPI_Send( comm->comm_1.pow,  count,  MPI_DOUBLE, comm->comm_1.rem_leader,  tag,  *(comm->comm_1.intercomm));
+	  if(ierr){
+	    return 1;
+	  }
 
 	}
 
@@ -111,40 +120,3 @@ int fer_comm_init(MPI_Comm *world_comm,
 }
 
 /**************************************************/
-
-int fer_corecv(MPI_Comm * couple_comm)
-{
-    int        ierr;
-    MPI_Status status;
-
-    // Receive cross sections data from all materials specified on Input
-    ierr = MPI_Recv(&order, 1, MPI_INTEGER, 0, tag, couple_comm, &status)
-
-    return 0;
-} 
-
-/**************************************************/
-
-int fer_cosend(MPI_Comm * couple_comm, int * control_fg)
-{
-    // Sends data calculates and the waits for the server order for control flow
-
-    int ierr, tag = 0;
-
-    ierr = MPI_Send (&output_var, N_output_var,MPI_DOUBLE, 0, tag, couple_comm);
-
-    // Receive control_fg instruction
-    ierr = MPI_Recv(control_fg, 1, MPI_INTEGER, 0, tag, couple_comm, &status)
-
-    return 0;
-} 
-
-/****************************************************************************************************/
-
-int fer_coends(MPI_Comm * couple_comm)
-{
-    // Finish the communication with the server
-    MPI_Comm_disconnect(couple_comm);
-
-    return 0;
-} 

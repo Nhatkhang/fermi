@@ -17,9 +17,9 @@
 #define DIM 3
 #define NPE 8
 
-MPI_Comm  WORLD_Comm; // global communicator
-MPI_Comm  FERMI_Comm; // local  communicator
-MPI_Comm *INTER_Comm; // array of inter-communicators to communicate
+MPI_Comm   WORLD_Comm; // global communicator
+MPI_Comm   FERMI_Comm; // local  communicator
+MPI_Comm * INTER_Comm; // array of inter-communicators to communicate
                       // with other codes
 
 int       globa_rank; // rank in WORLD_Comm
