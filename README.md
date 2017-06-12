@@ -28,8 +28,18 @@ Download it from [http://slepc.upv.es](http://slepc.upv.es) and do:
 
 ###`Compilation`:
 
+In `fermi/` directory do:
+
 ```bash
    make
+```
+
+For coupling do:
+```bash
+   cd lib/PLEPP
+   ./RUNNER.sh
+   cd..
+   make PLEPP=1
 ```
 
 ###`Input Structure`:
