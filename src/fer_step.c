@@ -1,12 +1,18 @@
-/* Newton - Raphson iterations*/
+/* 
+
+   FERMI basic evolutions kinds
+
+   ST: Static
+
+   TR: Transient
+
+*/
 
 #include "fermi.h"
 
 int ferstep_ST(void)
 {
 
-//  double norm;
-  
   if(fersrods(calcu.t)){
     PetscPrintf(FERMI_Comm,"Problem calculating control rods.\n"); 
     return 1;
@@ -19,7 +25,7 @@ int ferstep_ST(void)
     PetscPrintf(FERMI_Comm,"Problem solving the steady state.\n"); 
     return 1;
   }
-//  VecNorm(phi_n,NORM_2,&norm);
+
   /* Normalize the flux according to the power */
   if(fer_norm()){
     PetscPrintf(FERMI_Comm,"Problem normalizing the power.\n"); 
