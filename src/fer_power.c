@@ -1,7 +1,7 @@
 #include "fermi.h"
 
 /*************************************************************/
-int fernorm(void)
+int fer_norm(void)
 {
 
   /* Normalize the flux acording to the power specified (or default) */

@@ -21,7 +21,7 @@ int ferstep_ST(void)
   }
 //  VecNorm(phi_n,NORM_2,&norm);
   /* Normalize the flux according to the power */
-  if(fernorm()){
+  if(fer_norm()){
     PetscPrintf(FERMI_Comm,"Problem normalizing the power.\n"); 
     return 1;
   }
