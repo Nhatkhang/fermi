@@ -190,6 +190,47 @@ int ferinit(int argc,char **argv)
   //================================================================================ 
 
   //============================== 
+  // COMMUNICATION INITIALIZATION
+  //============================== 
+  //    
+  //  Prepare structures for stablishing communications
+  //
+  comm_t       * pcomm;
+  pn = list_comms.head;
+  while(pn){
+    pcomm = (comm_t *)pn->data;
+    switch (pcomm->kind){
+
+      case 1:
+
+	// we try to find the gmshid of the physical entities specified on input file
+	// and save them on "ids" array inside "comm_1"
+	for(i=0; i < pcomm->comm_1.nphy; i++){
+	  pp = list_physe.head;
+	  while(strcmp(pcomm->comm_1.phys[i],((gmshP_t*)pp->data)->name) != 0 ){
+	    pp = pp->next;
+	  }
+	  if(pp != NULL){
+	    pcomm->comm_1.ids[i] = ((gmshP_t*)pp->data)->gmshid;
+	  }
+	  else{
+	    PetscPrintf(FERMI_Comm,"Physical entity %s not found in gmsh file.\n",pcomm->comm_1.phys[i]); 
+	    return 1;
+	  }
+	}
+
+	break;
+
+      default:
+	return 1;
+
+    }
+    pn = pn->next;
+  }
+  //
+  //================================================================================ 
+
+  //============================== 
   // PRINTING STRUCTURES
   //============================== 
   //     

@@ -37,7 +37,9 @@ int ferfini(void)
   // e intercomunicadores
   //    commdom_delete(); 
 
+  MPI_Barrier(WORLD_Comm);
   SlepcFinalize();
+  MPI_Finalize();
 
   return 0;
 }

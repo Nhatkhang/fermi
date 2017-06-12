@@ -90,15 +90,24 @@ int main(int argc,char **argv)
     }
   }
 
-
   free(share);
 
   // We are ready to send cross sections here doing Bcast with INTER_Comm
   // and receiving powers with Recv (can be reduced by rank 0 in 0 and the send by him)
   //
-  // ...
+  int tag;
+  double xs[10]={1.5,0.2,0.5,0.4,1.0, 1.5,0.005,0.0,0.0,1.0};
+  double pow[2]={0.0,0.0};
+  MPI_Status    status;
 
-  //
+
+  // send xs
+  ierr = MPI_Send(xs,10,MPI_DOUBLE,remote_rank,tag,INTER_Comm);
+
+  // recv pow
+  ierr = MPI_Recv(pow,2,MPI_DOUBLE,remote_rank,tag,INTER_Comm,&status);
+
+  MPI_Barrier(WORLD_Comm);
   MPI_Finalize();
 
   return 0;

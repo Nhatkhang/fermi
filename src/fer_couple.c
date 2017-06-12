@@ -47,15 +47,9 @@ int fer_comm_step(int order)
 	  count = egn * nxs_mat * comm->comm_1.nphy;
 
 	  // we receive cross sections
-	  ierr = MPI_Recv( 
-	      comm->comm_1.xs,  
-	      count,  
-	      MPI_DOUBLE, 
-	      comm->comm_1.remote_rank,  
-	      tag,  
-	      *(comm->comm_1.intercomm), 
-	      &status 
-	      );
+	  ierr = MPI_Recv(comm->comm_1.xs,count,MPI_DOUBLE,comm->comm_1.remote_rank,tag,*(comm->comm_1.intercomm),
+	      &status);
+
 	  if(ierr){
 	    return 1;
 	  }
@@ -66,7 +60,6 @@ int fer_comm_step(int order)
 	  // sections in a list in this kind of code (arrays are better)
 	  for( i=0 ; i < comm->comm_1.nphy ; i++ ){
             
-
 	    // localizamos el material en la lista y copiamos
 	    pm = list_mater.head;
 	    while(pm){
@@ -121,14 +114,8 @@ int fer_comm_step(int order)
 	  fer_pow_phys( comm->comm_1.nphy, comm->comm_1.ids, comm->comm_1.pow );
 
 	  // we receive cross sections
-	  ierr = MPI_Send( 
-	      comm->comm_1.pow,  
-	      count,  
-	      MPI_DOUBLE, 
-	      comm->comm_1.remote_rank,  
-	      tag,  
-	      *(comm->comm_1.intercomm)
-	      );
+	  ierr = MPI_Send(comm->comm_1.pow,count,MPI_DOUBLE,comm->comm_1.remote_rank,tag,
+	      *(comm->comm_1.intercomm));
 	  if(ierr){
 	    return 1;
 	  }
@@ -207,7 +194,6 @@ int fer_comm_init(void)
 
         free(share);
       }
-
 
   #endif
 
