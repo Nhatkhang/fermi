@@ -1,4 +1,9 @@
-/* Fermi main program*/
+/* 
+
+FERMI main program
+
+*/
+
 
 #include "fermi.h"
 
@@ -22,14 +27,18 @@ int main(int argc,char **argv)
 
       dtn=((tcontrol_t*)pNod->data)->dt;
 
+      // recv information
       fer_comm_step(COUPLE_RECV);
 
+      // Assembly the system and solve with SLEPc
       if(ferstep_ST())
         goto error;
 
       sprintf(nam,"steady_r%d_t%d",rank,step);
       print_vtk(nam);
       print_out(&phi_n, step);
+
+      // send information
       fer_comm_step(COUPLE_SEND);
 
       calcu.t=calcu.t + dtn;
@@ -39,9 +48,23 @@ int main(int argc,char **argv)
 
     }
 
-  }else if(calcu.timedep == TR){
+  }
 
+  else if(calcu.timedep == TR){
+
+    //================================================== 
+    // Transient simulation
+    //
+    // 1) Calculate steady state solving Ax = (1/k) Bx
+    // 2) Recv information for coupling (if it required)
+    // 3) Calculates a "dt" increase in the flux solving
+    //    Ax = b
+    // 4) Send information for coupling (if it required)
+    // 5) Repeat from "2)" up to achieving final time "tf" 
+    //
     PetscPrintf(FERMI_Comm,"calculating stationary state.\n");
+    
+    // Assembly the system and solve with SLEPc
     if(ferstep_ST())
       goto error;
 
@@ -56,9 +79,14 @@ int main(int argc,char **argv)
 
       dtn=((tcontrol_t*)pNod->data)->dt;
 
+      // recv information
+      fer_comm_step(COUPLE_RECV);
+
+      // Assembly the system and solve with PETSc
       if(ferstep_TR(step))
         goto error;
 
+      // Calculates power
       if(fer_pow(&power))
         goto error;
 
@@ -66,6 +94,10 @@ int main(int argc,char **argv)
 
       sprintf(nam,"tran_rank%d_t%d",rank,step);
       print_vtk(nam);
+      print_out(&phi_n, step);
+
+      // send information
+      fer_comm_step(COUPLE_SEND);
 
       calcu.t=calcu.t + dtn;
       step ++;

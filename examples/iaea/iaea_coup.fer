@@ -7,17 +7,17 @@ $Mode
   timedep QSTATIC 
   p0 2.5e6  
   t0 0.0
-  tf 0.05
+  tf 0.15
   dt 0.05
 $EndMode
 
 $Xs
   egn 1
   #         F D   XA  nXF eXF    CHI
-  "ROD1"    0 1.5 0.2 0.2 5.4e-6 1.0                            
+  "ROD1"    0 1.5 1.2 0.2 5.4e-6 1.0                            
   "MAT1"    0 1.5 0.2 0.2 5.4e-6 1.0 
   "MAT2"    0 1.5 0.2 0.2 5.4e-6 1.0 
-  "MAT3"    0 1.5 0.2 0.0 5.4e-6 1.0 
+  "MAT3"    0 1.5 0.2 0.0 0.0e-6 1.0 
 $EndXs
 
 $Boundary
@@ -31,6 +31,13 @@ $Output
   # Power in physical entities
   kind 2
   file pow_phys.dat
-  nphy 2
-  "FUEL_Z1" "FLUID_Z1"
+  nphy 4
+  "ROD1" "MAT1" "MAT2" "MAT3"
 $EndOutput
+
+$Communication
+  kind   1
+  friend control
+  nphy   3
+  "MAT1" "MAT2" "MAT1"
+$EndCommunication
