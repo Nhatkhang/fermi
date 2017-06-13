@@ -21,11 +21,12 @@
 #include "stdlib.h"
 #include "commdom_wrapper.h"  
 
-#define NITER 3
+#define NITER 100
 
 int main(int argc,char **argv)
 {
 
+  FILE   *fl=fopen("control_otu.dat","w");
   int    i;
   int    rank       = -1;
   int    size       = -1;
@@ -101,30 +102,40 @@ int main(int argc,char **argv)
   // We are ready to send cross sections here doing Bcast with INTER_Comm
   // and receiving powers with Recv (can be reduced by rank 0 in 0 and the send by him)
   //
-  int tag;
+  int tag=0;
+  double xs_a0 = 0.2;
   double xs[20]={             \
-    1.5,1.2  ,0.2,5.4e-6,1.0, \
+    1.5,0.2  ,0.2,5.4e-6,1.0, \
     1.5,0.2  ,0.2,5.4e-6,1.0, \
     1.5,0.2  ,0.2,5.4e-6,1.0, \
     1.5,0.2  ,0.0,0.0   ,1.0  };
 
   double pow[4]={0.0,0.0,0.0,0.0};
+  double pow_0;
+  int  mat = 1;
 
   MPI_Status    status;
 
+  xs[mat*5 + 1] = xs_a0;
   for(i=0;i<NITER;i++){
 
     // send xs
-    ierr = MPI_Send(xs,20,MPI_DOUBLE,remote_rank,tag,INTER_Comm);
+    ierr = MPI_Ssend(xs,20,MPI_DOUBLE,remote_rank,tag,INTER_Comm);
 
     // recv pow
     ierr = MPI_Recv(pow,4,MPI_DOUBLE,remote_rank,tag,INTER_Comm,&status);
 
     // we calculate the new set of cross sections 
     // using the power
-    
+    if(i==0) pow_0 = pow[mat];
+    // negative feedback model for water
+    // if pow grows xs_a grows and pow decrease
+    xs[mat*5 + 1] = xs_a0 + (pow[mat] - pow_0)* 0.0e-6;
+    fprintf(fl,"%e %e\n",pow[mat],xs[mat*5 + 1]);
+
   }
 
+  fclose(fl);
   MPI_Barrier(WORLD_Comm);
   MPI_Finalize();
 

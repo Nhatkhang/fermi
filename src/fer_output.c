@@ -344,6 +344,7 @@ int print_out(Vec *phi, int step)
 
   int           i;
   int           error;
+  double        pow_tot = 0.0;
   Vec           x_local;
   node_list_t * pNod;
   output_t    * po;
@@ -389,14 +390,17 @@ int print_out(Vec *phi, int step)
 	   <"phys_1"> <"phys_2"> ... <"phys_n">
 
 	 */
+        
 
 	fer_pow_phys( po->kind_2.nphy, po->kind_2.ids, po->kind_2.pow );
 
 	if(local_rank == 0){
 	  for(i=0;i<po->kind_2.nphy;i++){
 	    fprintf(po->kind_2.fp, "%e ",po->kind_2.pow[i]);
+	    pow_tot += po->kind_2.pow[i];
 	  }
-	  fprintf(po->kind_2.fp, "\n");
+	  // we print the sum of all the powers in the Physical Entities
+	  fprintf(po->kind_2.fp, "%e\n",pow_tot);
 	}
 
         break;

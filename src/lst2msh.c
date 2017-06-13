@@ -63,7 +63,7 @@ int cpyelemv (node_list_t *elem_nl, elem_t *elemv){
     pv->name  = (char*)calloc(sizeof(pvl->name),sizeof(char)); strcpy(pv->name,pvl->name); 
     pv->gmshid=gmshid;
     pv->D     = (double*)calloc(egn,sizeof(double));
-    pv->xs_a  = (double*)calloc(egn,sizeof(double));
+//    pv->xs_a  = (double*)calloc(egn,sizeof(double));
     pv->xs_s  = (double*)calloc(egn*(egn-1),sizeof(double));
     pv->nxs_f = (double*)calloc(egn,sizeof(double));
     pv->exs_f = (double*)calloc(egn,sizeof(double));
@@ -71,7 +71,7 @@ int cpyelemv (node_list_t *elem_nl, elem_t *elemv){
 
     for(d=0;d<egn;d++){
         pv->D[d]     = pvl->D[d];
-        pv->xs_a[d]  = pvl->xs_a[d];
+        pv->xs_a     = pvl->xs_a;
         for(d1=0;d1<egn-1;d1++)
             pv->xs_s[d*(egn-1)+d1]  = pvl->xs_s[d*(egn-1)+d1];
         pv->nxs_f[d] = pvl->nxs_f[d];

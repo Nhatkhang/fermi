@@ -97,6 +97,7 @@ int fer_comm_step(int order)
 		  mat->xs_s[en]   = comm->comm_1.xs[i * nxs_mat + 5*egn + en];
 		}
 
+                break;
 	      }
 
 	      pm = pm->next;
@@ -114,7 +115,7 @@ int fer_comm_step(int order)
 	  fer_pow_phys( comm->comm_1.nphy, comm->comm_1.ids, comm->comm_1.pow );
 
 	  // we receive cross sections
-	  ierr = MPI_Send(comm->comm_1.pow,count,MPI_DOUBLE,comm->comm_1.remote_rank,tag,
+	  ierr = MPI_Ssend(comm->comm_1.pow,count,MPI_DOUBLE,comm->comm_1.remote_rank,tag,
 	      *(comm->comm_1.intercomm));
 	  if(ierr){
 	    return 1;
