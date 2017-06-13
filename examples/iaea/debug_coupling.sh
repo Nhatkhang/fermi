@@ -1,6 +1,12 @@
 #!/bin/bash
 
-break_fer=( 'fer_couple.c:50' 'fer_main.c:25' ) 
+# STEADY
+#break_fer=( 'fer_couple.c:50' 'fer_main.c:25' ) 
+
+# TRANSIENT
+#break_fer=( 'fer_couple.c:50' 'fer_main.c:65' ) 
+break_fer=( 'fer_main.c:65' ) 
+
 break_con=( 'control.c:112' ) 
 
 

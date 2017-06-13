@@ -4,7 +4,7 @@ $EndMesh
 
 
 $Mode
-  timedep QSTATIC 
+  timedep DYNAMIC 
   p0 2.5e6  
   t0 0.0
   tf 0.15
@@ -13,6 +13,11 @@ $EndMode
 
 $Xs
   egn 1
+  pgn 1
+  vel 100.0
+  # kynetic constants
+  #   b1    l1
+  kyn 0.001 1.0e-6 1.0
   #         F D   XA  nXF eXF    CHI
   "ROD1"    0 1.5 1.2 0.2 5.4e-6 1.0                            
   "MAT1"    0 1.5 0.2 0.2 5.4e-6 1.0 
@@ -38,6 +43,6 @@ $EndOutput
 $Communication
   kind   1
   friend control
-  nphy   3
-  "MAT1" "MAT2" "MAT1"
+  nphy   4
+  "ROD1" "MAT1" "MAT2" "MAT3"
 $EndCommunication

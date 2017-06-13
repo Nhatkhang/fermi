@@ -102,17 +102,23 @@ int main(int argc,char **argv)
   // and receiving powers with Recv (can be reduced by rank 0 in 0 and the send by him)
   //
   int tag;
-  double xs[10]={1.5,0.2,0.5,0.4,1.0, 1.5,0.005,0.0,0.0,1.0};
-  double pow[2]={0.0,0.0};
+  double xs[20]={             \
+    1.5,1.2  ,0.2,5.4e-6,1.0, \
+    1.5,0.2  ,0.2,5.4e-6,1.0, \
+    1.5,0.2  ,0.2,5.4e-6,1.0, \
+    1.5,0.2  ,0.0,0.0   ,1.0  };
+
+  double pow[4]={0.0,0.0,0.0,0.0};
+
   MPI_Status    status;
 
   for(i=0;i<NITER;i++){
 
     // send xs
-    ierr = MPI_Send(xs,10,MPI_DOUBLE,remote_rank,tag,INTER_Comm);
+    ierr = MPI_Send(xs,20,MPI_DOUBLE,remote_rank,tag,INTER_Comm);
 
     // recv pow
-    ierr = MPI_Recv(pow,2,MPI_DOUBLE,remote_rank,tag,INTER_Comm,&status);
+    ierr = MPI_Recv(pow,4,MPI_DOUBLE,remote_rank,tag,INTER_Comm,&status);
 
     // we calculate the new set of cross sections 
     // using the power
